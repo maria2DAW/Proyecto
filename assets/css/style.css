@@ -1,0 +1,29 @@
+*{
+	margin: 0 auto;
+}
+
+nav{
+	background-color: #000;
+	padding: 10px 0;
+	text-align: center;
+}
+
+nav ul li{
+	display: inline-block;
+	font-size: 16px;
+	padding: 0 25px;
+	text-transform: uppercase;
+}
+
+nav ul li a{
+	color: white;
+	text-decoration: none;
+}
+
+footer{
+	background-color: #333;
+	color: white;
+	font-size: 16px;
+	padding: 30px 0;
+	text-align: center;
+}
