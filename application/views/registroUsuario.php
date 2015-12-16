@@ -35,14 +35,21 @@
 	
 	<?php echo form_error('email'); ?><br><br>
 	
-	<label for='pais' >Pais: </label>
+	<label for='pais' >País: </label>
 	<select name="pais" id="pais">
 		
 		<?php
 		
-		foreach($listaPaises as $pais)
+		for($i = 0; $i < count($listaContinentes); $i++)
 		{
-			echo "<option value='".$pais->id_pais."'>".$pais->nombre_pais."</option>";
+			echo "<optgroup label='".$listaContinentes[$i]."'>";
+			
+			for($j = 0; $j < count($listaPaisesContinente[$i]); $j++)
+			{
+				echo "<option value='".$listaPaisesContinente[$i][$j]["id_pais"]."'>".$listaPaisesContinente[$i][$j]["nombre_pais"]."</option>";
+			}
+			
+			echo "</optgroup>";
 		}
 		
 		?>

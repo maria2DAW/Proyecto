@@ -4,13 +4,13 @@
 
 <br><br>
 
-<a href='<?=base_url(); ?>index.php/Controlador_principal/interpretes_por_indice_simbolo'>#</a><?=" | ";?>
+<a onclick="cargarSimbolos()" >#</a><?=" | ";?>
 
 <?php 
 
 foreach(range('A', 'Z') as $letter)
 { ?>
-	<a href='<?=base_url(); ?>index.php/Controlador_principal/interpretes_por_indice_letra/<?=$letter;?>'>
+	<a onclick="cargarLetra('<?=$letter;?>')" >
 	<?=$letter;?>
 	</a><?=" | ";?>
 	
@@ -18,7 +18,7 @@ foreach(range('A', 'Z') as $letter)
 }
 ?>
 
-<a href='<?=base_url(); ?>index.php/Controlador_principal/interpretes_por_indice_numero'>0-9</a><?=" | ";?>
+<a onclick="cargarNumeros()">0-9</a><?=" | ";?>
 
 <br><br>
 

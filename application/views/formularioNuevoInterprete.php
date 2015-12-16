@@ -24,6 +24,20 @@
 				
 	</select><br><br>
 	
+	<label>Género / Géneros del intérprete: </label><br><br>
+	
+	<?php
+		
+		foreach($listaGeneros as $genero)
+		{
+			//usar <label><input type="checkbox" />etiqueta</label> para asociar la etiqueta adjunta, así el check se marca al hacer click en la etiqueta
+			echo "<label><input name='genInt[]' id='genInt' type='checkbox' value='".$genero->id_genero."' >".$genero->nombre_genero."</label><br>";
+		}
+		
+	?>
+	
+	<br><br>
+	
 	<label for='orgInt' >Origen del intérprete: </label>
 	<input type='text' name='orgInt' id='orgInt' /><br><br>
 	

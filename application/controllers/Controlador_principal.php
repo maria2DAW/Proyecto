@@ -14,6 +14,7 @@ class Controlador_principal extends CI_Controller {
 		$this->load->model('modelo_usuario','mod_usu');
 		$this->load->model('modelo_pais','mod_pais');
 		$this->load->model('modelo_tipo_interprete','mod_tipo_int');
+		$this->load->model('modelo_genero','mod_gen');
 	}
 	
 	public function index() 
@@ -26,6 +27,8 @@ class Controlador_principal extends CI_Controller {
 	public function formularioNuevoInterprete() 
 	{
 		$data['listaTiposInterprete'] = $this->mod_tipo_int->lista_tipos_interprete();
+		
+		$data['listaGeneros'] = $this->mod_gen->lista_generos();
 		
 		$data['title'] = "Nuevo Intérprete";
 		$data['main_content'] = 'formularioNuevoInterprete';
@@ -66,6 +69,13 @@ class Controlador_principal extends CI_Controller {
 		$codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
 		
 		$this->mod_int->insertar_interprete($nombreInt, $tipoInt, $origenInt, $biografiaInt, $imagenInt, $codigoUsuario);
+		
+		$generosInterprete = $this->input->post('genInt');
+		
+		foreach($generosInterprete as $generoInte)
+		{
+			$this->mod_gen->insertar_genero_interprete($idInt, $generoInte);
+		}
 		
 		$data['title'] = "Inicio";
 		$data['main_content'] = 'inicio';
@@ -194,7 +204,20 @@ class Controlador_principal extends CI_Controller {
 	
 	public function formularioRegistro() 
 	{
-		$data['listaPaises'] = $this->mod_pais->lista_paises();
+		//$data['listaPaises'] = $this->mod_pais->lista_paises();
+		
+		$listaContinentes = array('Asia','Africa','Europe','North America','Oceania','South America');
+		$data['listaContinentes'] = $listaContinentes;
+		
+		$listaPaisesContinente = array();
+		
+		for($i = 0; $i < count($listaContinentes); $i++)
+		{
+			$listaPais = $this->mod_pais->lista_paises_continente($listaContinentes[$i]);
+			array_push($listaPaisesContinente, $listaPais); 
+		}
+		
+		$data['listaPaisesContinente'] = $listaPaisesContinente;
 	
 		$data['title'] = "Registro";
 		$data['main_content'] = 'registroUsuario';
@@ -250,28 +273,34 @@ class Controlador_principal extends CI_Controller {
 	{
 		$data['listaInterpretesPorSimbolo'] = $this->mod_int->lista_interpretes_empiezan_por_otro_caracter();
 		
-		$data['title'] = "Índice de intérpretes";
+		$this->load->view('vistaInterpretesPorIndiceSimbolo',$data);
+		
+		/*$data['title'] = "Índice de intérpretes";
 		$data['main_content'] = 'vistaInterpretesPorIndiceSimbolo';
-		$this->load->view('plantillas/template', $data);
+		$this->load->view('plantillas/template', $data);*/
 	}
 	
 	public function interpretes_por_indice_numero()
 	{
 		$data['listaInterpretesPorNumero'] = $this->mod_int->lista_interpretes_empiezan_por_numero();
 		
-		$data['title'] = "Índice de intérpretes";
+		$this->load->view('vistaInterpretesPorIndiceNumero',$data);
+		
+		/*$data['title'] = "Índice de intérpretes";
 		$data['main_content'] = 'vistaInterpretesPorIndiceNumero';
-		$this->load->view('plantillas/template', $data);
+		$this->load->view('plantillas/template', $data);*/
 	}
 	
 	public function interpretes_por_indice_letra($letra)
 	{
 		$data['listaInterpretesPorLetra'] = $this->mod_int->lista_interpretes_empiezan_por_letra($letra);
-		
-		$data['title'] = "Índice de intérpretes que empiezan por ".$letra;
 		$data['letra'] = $letra;
+		
+		$this->load->view('vistaInterpretesPorIndiceLetra',$data);
+		
+		/*$data['title'] = "Índice de intérpretes que empiezan por ".$letra;
 		$data['main_content'] = 'vistaInterpretesPorIndiceLetra';
-		$this->load->view('plantillas/template', $data);
+		$this->load->view('plantillas/template', $data);*/
 	}
 	
 	
