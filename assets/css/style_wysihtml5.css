@@ -15,18 +15,17 @@
   #wysihtml5-textarea {
 	width: 600px;
     height: 500px;
-    border: 2px solid green;
     font-family: Verdana;
     font-size: 11px;
   }
   
   #wysihtml5-textarea:focus {
-    color: black;
-    border: 2px solid black;
+    /*color: black;
+    border: 2px solid black;*/
   }
   
   .wysihtml5-command-active {
-    font-weight: bold;
+    /*font-weight: bold;*/
   }
   
   [data-wysihtml5-dialog] {
@@ -47,13 +46,7 @@
     color: blue;
   }
   
-  a {
-    color: #000;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  
-  .wysiwyg-font-size-smaller {
+.wysiwyg-font-size-smaller {
   font-size: smaller;
 }
 
@@ -153,6 +146,14 @@
   color: aqua;
 }
 
+.wysiwyg-color-orange {
+    color: orange;
+}
+
+.wysiwyg-color-ff7878 {
+    color: #ff7878;
+}
+
 .wysiwyg-text-align-right {
   text-align: right;
 }
@@ -181,11 +182,4 @@
 
 .wysiwyg-clear-left {
   clear: left;
-}
-
-.listaGenerosInt{
-    height: 200px;
-    width: 300px;
-    overflow: auto;
-    border: 1px solid #000000;
 }

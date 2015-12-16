@@ -1,9 +1,6 @@
-<br><br><br><br><br><br><br>
+<br>
+
 <head>Lista de letras</head>
-
-<br><br>
-
-<a href='<?=base_url(); ?>index.php/Controlador_principal/vista_anyadir_letra'>Añadir letra</a>
 
 <br><br>
 

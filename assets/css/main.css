@@ -24,6 +24,8 @@ body {
     -webkit-overflow-scrolling: touch;
     
     margin-top: 70px;
+
+    padding-top: 30px; /*Para que la barra de navegación no tape los contenidos de la parte superior */
 }
 
 /* Titles */
@@ -135,7 +137,7 @@ a:after {
 #headerwrap {
 	background: url(../img/header-bg.jpg) no-repeat center top;
         background-color: #3498db;
-	margin-top: -10px;
+	margin-top: -20px;
 	padding-top:20px;
 	text-align:center;
 	background-attachment: relative;

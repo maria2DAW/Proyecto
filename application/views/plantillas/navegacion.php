@@ -13,12 +13,12 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-				<li class="active"><a href='<?=base_url(); ?>'>INICIO</a></li>
-				<li><a href='<?=base_url(); ?>'>ACERCA DE</a></li>
-				<li><a href='<?=base_url(); ?>index.php/Controlador_principal/indice_interpretes'>INTÉRPRETES</a></li>			
-				<li><a href='<?=base_url(); ?>'>ÁLBUMES</a></li>
-				<li><a href='<?=base_url(); ?>index.php/Controlador_principal/indice_letras'>LETRAS</a></li>
-				<li><a href='<?=base_url(); ?>index.php/Controlador_principal/formularioLoguear'>LOGIN</a></li>
+                <li class="active"><a href='<?=base_url(); ?>'>INICIO</a></li>
+                <li><a href='<?=base_url(); ?>'>ACERCA DE</a></li>
+                <li><a href='<?=base_url(); ?>index.php/Controlador_principal/indice_interpretes'>INTÉRPRETES</a></li>
+                <li><a href='<?=base_url(); ?>'>ÁLBUMES</a></li>
+                <li><a href='<?=base_url(); ?>index.php/Controlador_principal/indice_letras'>LETRAS</a></li>
+                <li><a href='<?=base_url(); ?>index.php/Controlador_principal/formularioLoguear'>LOGIN</a></li>
             </ul>
         </div><!--/.nav-collapse -->           
     </div>
