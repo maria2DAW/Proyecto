@@ -32,11 +32,13 @@ class Modelo_cancion extends CI_Model
 		$this->db->insert('interprete',$campos);
 	}
 	
-	public function insertar_solo_nombre_cancion($nombreCan)
+	public function insertar_solo_nombre_cancion($nombreCan, $albumCan, $usuarioCan)
 	{
 		$campos = array(
 		'id_cancion' => null,
-		'nombre_cancion' => $nombreCan
+		'nombre_cancion' => $nombreCan,
+		'album_cancion' => $albumCan,
+		'usuario_cancion' => $usuarioCan
 		);
 		
 		$this->db->insert('cancion',$campos);
@@ -64,5 +66,11 @@ class Modelo_cancion extends CI_Model
 		$qSqlA = $this->db->query('SELECT id_cancion from cancion where nombre_cancion = "'.$nombreCancion.'";');
     	$row = $qSqlA->row();
 		return $row->id_cancion;
+	}
+	
+	public function obtener_id_cancion_ultimo_insert()
+	{
+		$insert_id = $this->db->insert_id();
+		return  $insert_id;
 	}
 }	

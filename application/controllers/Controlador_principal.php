@@ -264,9 +264,7 @@ class Controlador_principal extends CI_Controller {
 	}
 	
 	public function indice_interpretes()
-	{
-		$data["consulta"] = $this->db->last_query();
-		
+	{		
 		$data['title'] = "Índice de intérpretes";
 		$data['main_content'] = 'indiceInterpretes';
 		$this->load->view('plantillas/template', $data);
@@ -277,10 +275,6 @@ class Controlador_principal extends CI_Controller {
 		$data['listaInterpretesPorSimbolo'] = $this->mod_int->lista_interpretes_empiezan_por_otro_caracter();
 		
 		$this->load->view('vistaInterpretesPorIndiceSimbolo',$data);
-		
-		/*$data['title'] = "Índice de intérpretes";
-		$data['main_content'] = 'vistaInterpretesPorIndiceSimbolo';
-		$this->load->view('plantillas/template', $data);*/
 	}
 	
 	public function interpretes_por_indice_numero()
@@ -288,10 +282,6 @@ class Controlador_principal extends CI_Controller {
 		$data['listaInterpretesPorNumero'] = $this->mod_int->lista_interpretes_empiezan_por_numero();
 		
 		$this->load->view('vistaInterpretesPorIndiceNumero',$data);
-		
-		/*$data['title'] = "Índice de intérpretes";
-		$data['main_content'] = 'vistaInterpretesPorIndiceNumero';
-		$this->load->view('plantillas/template', $data);*/
 	}
 	
 	public function interpretes_por_indice_letra($letra)
@@ -300,10 +290,6 @@ class Controlador_principal extends CI_Controller {
 		$data['letra'] = $letra;
 		
 		$this->load->view('vistaInterpretesPorIndiceLetra',$data);
-		
-		/*$data['title'] = "Índice de intérpretes que empiezan por ".$letra;
-		$data['main_content'] = 'vistaInterpretesPorIndiceLetra';
-		$this->load->view('plantillas/template', $data);*/
 	}
 	
 	public function vista_info_interpretes($idInterprete)
@@ -312,11 +298,7 @@ class Controlador_principal extends CI_Controller {
 		$data['tipoInterprete'] = $this->mod_tipo_int->obtener_nombre_tipo_interprete($data['infoInterpretes'][0]->tipo_interprete);
 		$data['usuarioInterprete'] = $this->mod_usu->obtener_nombre_usuario($data['infoInterpretes'][0]->usuario_interprete);
 		
-		$data["consulta"] = $this->db->last_query();
-		
-		$camposInt = $this->mod_int->obtener_campos_interprete();
-		
-		
+		//$camposInt = $this->mod_int->obtener_campos_interprete();
 		
 		$data['title'] = "Información de ".$data['infoInterpretes'][0]->nombre_interprete;
 		$data['main_content'] = 'vistaInformacionInterprete';
@@ -332,15 +314,43 @@ class Controlador_principal extends CI_Controller {
 	
 	public function guardar_datos_letra()
 	{
-		$interpreteCancion = $this->input->post('intCan');
+		$nombreInterpreteCancion = $this->input->post('intCan'); //Nombre del intérprete
 		$albumCancion = $this->input->post('albCan');
 		$tituloCancion = $this->input->post('titCan');
-		$letraCancion = $this->input->post('wysihtml5-textarea');
+		$letraCancion = $this->input->post('letraCancion');
 		
 		$nombreUsuario = $this->session->userdata['nombreregistro'];
 		$codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
 		
+		$idInt = "";
+		$idAlb = "";
 		
+		if($this->mod_int->comprobar_existencia_interprete($nombreInterpreteCancion))
+		{
+			$idInt = $this->mod_int->obtener_id_interprete($nombreInterpreteCancion);
+		}
+		
+		else
+		{
+			$this->mod_int->insertar_solo_nombre_interprete($nombreInterpreteCancion, $codigoUsuario);
+			$idInt = $this->mod_int->obtener_id_interprete_ultimo_insert();
+		}
+		
+		if($this->mod_alb->comprobar_existencia_album($idInt, $albumCancion))
+		{
+			$idAlb = $this->mod_alb->obtener_id_album($albumCancion);
+		}
+		
+		else
+		{
+			$this->mod_alb->insertar_solo_nombre_album($nombreInterpreteCancion, $idInt, $codigoUsuario);
+			$idAlb = $this->mod_alb->obtener_id_album_ultimo_insert();
+		}
+		
+		$this->mod_can->insertar_solo_nombre_cancion($tituloCancion, $idAlb, $codigoUsuario);
+		$idCan = $this->mod_can->obtener_id_cancion_ultimo_insert();
+		
+		$this->mod_let->insertar_letra($idCan, $letraCancion);
 		
 		$this->index();
 	}
