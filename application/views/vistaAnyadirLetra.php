@@ -10,8 +10,24 @@
 <label for='titCan' >Título de la canción: </label><br>
 <input type='text' name='titCan' id='titCan' /><br><br>
 
+<div id="wysihtml5-toolbar" style="display: none;">
+<a data-wysihtml5-command="bold" title="CTRL+B">bold</a> |
+<a data-wysihtml5-command="italic" title="CTRL+I">italic</a> |
+<div data-wysihtml5-command-group="foreColor" class="fore-color" >
+	<a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="red" unselectable="on" >red</a> |
+	<a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="green" unselectable="on" >green</a> |
+	<a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="blue" unselectable="on" >blue</a> |
+	<a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="silver"unselectable="on" >plata</a> |
+	<a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="purple"unselectable="on" >morado</a> |
+	<a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="maroon" unselectable="on" >marron</a> |
+	<a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="lime" unselectable="on" >lima</a> |
+	<a data-wysihtml5-command="foreColor" data-wysihtml5-command-value="yellow" unselectable="on" >amarillo</a> |
+</div>
 
-<textarea class="textarea" id="wysihtml5-textarea" name="wysihtml5-textarea" placeholder="Enter text ..." style="width: 810px; height: 200px" ></textarea><br><br>
+<a data-wysihtml5-action="change_view">switch to html view</a>
+	
+</div>
+<textarea id="wysihtml5-textarea" name="wysihtml5-textarea" placeholder="Enter text ..."></textarea><br><br>
 
 <input type="hidden" name="letraCancion" id="letraCancion" value="">
 
