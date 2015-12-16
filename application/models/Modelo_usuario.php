@@ -43,6 +43,13 @@ class Modelo_usuario extends CI_Model
 		$eSqlA = $this->db->query($qSqlA);
 		return $eSqlA->row();
 	}
+
+    public function obtener_usuario_por_registro($registroUsuario)
+    {
+        $qSqlA = 'SELECT * FROM usuario WHERE nombre_registro_usuario = "'.$registroUsuario.'";';
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->row();
+    }
 	
 	public function insertar_usuario($nombreUsu, $email, $pass, $nombre, $apellidos, $pais)
 	{
@@ -87,7 +94,7 @@ class Modelo_usuario extends CI_Model
 
 		$query = $this->db->query($sql, array($usuarioIntroducido, $password, 0, $usuarioIntroducido, $password, 0));
 
-        return $query->result_array();
+        return $query->row();
     }
 	
 	public function cerrarSesion()

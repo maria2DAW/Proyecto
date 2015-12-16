@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="row">
+    <div class="row centered">
         <div class="col-md-8 col-md-offset-2">
             <h2 align="center">Nueva Letra</h2>	<br><br>
             <div class="center-block">
@@ -32,3 +32,6 @@
         </div>
     </div>
 </div>
+
+
+    <br><br>

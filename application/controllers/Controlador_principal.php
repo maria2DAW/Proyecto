@@ -33,9 +33,7 @@ class Controlador_principal extends CI_Controller {
         else
         {
             $this->data['login'] = $this->session->userdata['nombreregistro'];
-
-
-                $this->data['enlaceLogin'] = 'logear';
+            $this->data['enlaceLogin'] = 'accesoUsuarios';
         }
 	}
 
@@ -214,6 +212,7 @@ class Controlador_principal extends CI_Controller {
 	public function logear()
 	{
         $pass = $this->input->post('passUsu');
+        $nomUsuario = $this->input->post('nomUsu');
 
         $this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
 
@@ -231,34 +230,43 @@ class Controlador_principal extends CI_Controller {
 		
 		else
 		{
+            $usuariObtenido = $this->mod_usu->obtener_usuario_por_registro($nomUsuario);
+
             $datos_sesion = array(
-                    'nombreregistro' => $this->input->post('nomUsu'),
-                    'passwordusuario' => $pass
+                    'nombreregistro' => $usuariObtenido->nombre_registro_usuario,
+                    'passwordusuario' => $usuariObtenido->password_usuario,
+                    'nivelusuario' => $usuariObtenido->nivel_usuario
             );
 
             $this->session->set_userdata($datos_sesion);
 			
 			$nombreUsuario = $this->session->userdata['nombreregistro'];
-			
-			//$data['title'] = $nombreUsuario;
-			
-			if($nombreUsuario == 'ADMIN')
-			{
-				$main_content = 'panelAdmin';
-			}
-			
-			else
-			{
-				$main_content = 'panelUsuario';
-			}
-			
-			
-			/*$data['main_content'] = $main_content;
-			$this->load->view('plantillas/template', $data);*/
 
-            $this->establecerContenidoPrincipal($nombreUsuario, $main_content);
+
+            $this->data['login'] = $nombreUsuario;
+            $this->data['enlaceLogin'] = 'accesoUsuarios';
+
+            $this->index();
 		}
 	}
+
+    public function accesoUsuarios()
+    {
+        $nombreUsuario = $this->session->userdata['nombreregistro'];
+        $nivelUsuario = $this->session->userdata['nivelusuario'];
+
+        if($nivelUsuario == 'A')
+        {
+            $main_content = 'panelAdmin';
+        }
+
+        else
+        {
+            $main_content = 'panelUsuario';
+        }
+
+        $this->establecerContenidoPrincipal($nombreUsuario, $main_content);
+    }
 	
 	public function validarUsuarioYPassword($nomUsuario, $passUsuario)
     {
@@ -279,6 +287,9 @@ class Controlador_principal extends CI_Controller {
 	public function cerrarSesion()
 	{
 		$this->mod_usu->cerrarSesion();
+
+        $this->data['enlaceLogin'] = 'accesoUsuarios';
+        $this->data['login'] = 'Log in';
 		
 		$this->formularioLoguear();
 	}

@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
-            <h3>Registro de usuario</h3>
+            <h3 align="center">Registro de usuario</h3>
 
             <br><br>
 

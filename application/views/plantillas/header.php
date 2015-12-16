@@ -15,8 +15,12 @@
         <!-- Custom styles for this template -->
         <link href="<?=base_url();?>assets/css/main.css" rel="stylesheet">
 
+        <!-- Estilo para bootstrap3-wysiwyg -->
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>assets/css/bootstrap3-wysiwyg-master/src/bootstrap3-wysihtml5.css">
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>assets/css/style_wysihtml5.css">
+
+        <!-- Estilo para plugin select múltiple -->
+        <link rel="stylesheet" type="text/css" href="<?=base_url();?>assets/js/bootstrap-multiselect-master/dist/css/bootstrap-multiselect.css">
 
         <title><?=$title; ?></title>
 	</head>
