@@ -12,13 +12,29 @@
 <script src="<?=base_url();?>assets/css/bootstrap3-wysiwyg-master/src/locales/bootstrap-wysihtml5.es-ES.js"></script>
 <script src="<?=base_url();?>assets/css/bootstrap3-wysiwyg-master/src/generated/commands.js"></script>
 
-<script type="text/javascript" src="<?=base_url();?>assets/js/bootstrap-multiselect-master/dist/js/bootstrap-multiselect.js"></script>
+<!-- Estilo para plugin select múltiple -->
+<script type="text/javascript" src="<?=base_url();?>assets/js/jQuery-Multiple-Select/multiple-select.js"></script>
 
+<!-- Funciones propias-->
 <script type="text/javascript" src="<?=base_url(); ?>assets/js/funciones.js"></script>
 
 <script>
 
-    $('#genInt').multiselect();
+    $('#genInt').multipleSelect({
+        selectAll: false,
+        multiple: true,
+        multipleWidth: 160,
+        width: '100%',
+        filter: true,
+        placeholder: "Géneros"
+    });
+
+function recogerGenerosInterprete()
+{
+    var generosInt = $('#genInt').multipleSelect("getSelects"); //Array con todos los valores de los checkbox
+
+    generosRecogidos.value = generosInt; //Al recoger el array en el value del input type hidden pasa a string (se pasará a array con explode de PHP en el controlador)
+}
 
 function recogerLetra()
 {

@@ -20,7 +20,7 @@
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>assets/css/style_wysihtml5.css">
 
         <!-- Estilo para plugin select múltiple -->
-        <link rel="stylesheet" type="text/css" href="<?=base_url();?>assets/js/bootstrap-multiselect-master/dist/css/bootstrap-multiselect.css">
+        <link rel="stylesheet" type="text/css" href="<?=base_url();?>assets/js/jQuery-Multiple-Select/multiple-select.css">
 
         <title><?=$title; ?></title>
 	</head>

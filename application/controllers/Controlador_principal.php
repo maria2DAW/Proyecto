@@ -129,11 +129,15 @@ class Controlador_principal extends CI_Controller {
 			
 			$idInsertInterprete = $this->mod_general->obtener_id_ultimo_insert();
 			
-			$generosInterprete = $this->input->post('genInt');
+			//$generosInterprete = $this->input->post('genInt');
+
+            $generosInterprete = $this->input->post('generosRecogidos'); //El post contiene un string con todos los valores de los géneros
 			
-			if(count($generosInterprete) > 0)
+			if(count($generosInterprete) > 0) //Si $generosInterprete no está vacío
 			{
-				foreach($generosInterprete as $generoInte)
+                $arrGenerosInterprete = explode(",", $generosInterprete); //creamos con explode un array con todos los valores de los géneros
+
+				foreach($arrGenerosInterprete as $generoInte) //Insertamos todos los géneros de dicho intérprete
 				{
 					$this->mod_gen->insertar_genero_interprete($idInsertInterprete, $generoInte);
 				}
@@ -144,11 +148,7 @@ class Controlador_principal extends CI_Controller {
 	}
 	
 	public function formularioNuevoAlbum() 
-	{		
-		/*$data['title'] = "Nuevo Álbum";
-		$data['main_content'] = 'formularioNuevoAlbum';
-		$this->load->view('plantillas/template', $data);*/
-
+	{
         $this->establecerContenidoPrincipal("Nuevo Álbum", "formularioNuevoAlbum");
 	}
 	

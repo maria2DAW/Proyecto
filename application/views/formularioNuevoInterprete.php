@@ -3,11 +3,15 @@
         <div class="col-md-4 col-md-offset-4">
             <h3 align="center">Nuevo Intérprete</h3>
 
-            <br><br>
+            <br>
+
+            <span class="help-block"><span class="glyphicon glyphicon-info-sign"></span> Campos obligatorios (*)</span>
+
+            <br>
 
             <form action='<?= base_url(); ?>index.php/Controlador_principal/guardar_datos_interprete' method='post' enctype="multipart/form-data" role="form">
                 <div class="form-group">
-                    <label class="control-label" for='nomInt' >Nombre del intérprete: </label>
+                    <label class="control-label" for='nomInt' >* Nombre del intérprete:</label>
                     <input class="form-control" type='text' name='nomInt' id='nomInt' value='<?= set_value('nomInt');?>' />
                     <?=form_error('nomInt'); ?>
                 </div>
@@ -30,25 +34,9 @@
                     </select>
                 </div>
 
-                <label>Género/s del intérprete: </label><br><br>
-
-                <!--<div class="listaGenerosInt">
-                <?php
-
-                    foreach($listaGeneros as $genero)
-                    {
-                        //usar <label><input type="checkbox" />etiqueta</label> para asociar la etiqueta adjunta, así el check se marca al hacer click en la etiqueta
-                        echo "<label class='checkbox-inline'><input name='genInt[]' id='genInt' type='checkbox' value='".$genero->id_genero."' ";
-                        echo set_checkbox('genInt', $genero->id_genero);
-                        echo ">".$genero->nombre_genero."</label>";
-                    }
-
-                ?>
-                </div>-->
-
                 <div class="form-group">
                     <label class="control-label" for='genInt' >Género/s del intérprete: </label>
-                    <select class="form-control" name="name='genInt[]" id="genInt" multiple="multiple">
+                    <select name="genInt[]" id="genInt" multiple="multiple">
 
                         <?php
 
@@ -64,7 +52,23 @@
                     </select>
                 </div>
 
+                <!--<label>Género/s del intérprete: </label><br><br>
 
+                <div class="listaGenerosInt">
+                <?php
+
+                    foreach($listaGeneros as $genero)
+                    {
+                        //usar <label><input type="checkbox" />etiqueta</label> para asociar la etiqueta adjunta, así el check se marca al hacer click en la etiqueta
+                        echo "<label class='checkbox-inline'><input name='genInt[]' id='genInt' type='checkbox' value='".$genero->id_genero."' ";
+                        echo set_checkbox('genInt', $genero->id_genero);
+                        echo ">".$genero->nombre_genero."</label>";
+                    }
+
+                ?>
+                </div>-->
+
+                <input type="hidden" name="generosRecogidos" id="generosRecogidos" value="">
 
                 <br><br>
 
@@ -85,7 +89,9 @@
                     <input type='file' name='imgInt' id='imgInt' />
                 </div>
 
-                <input class="btn btn-rosado btn-block" type='submit' value='Enviar Datos' ><br><br>
+                <br>
+
+                <input class="btn btn-rosado btn-block" type='submit' value='Enviar Datos' onClick="recogerGenerosInterprete();" ><br><br>
 
             </form>
         </div>
