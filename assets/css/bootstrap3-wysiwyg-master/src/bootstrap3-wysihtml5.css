@@ -105,6 +105,14 @@ ul.wysihtml5-toolbar div[data-wysihtml5-command-value="ff7878"] {
   background: #ff7878 !important;
 }
 
+ul.wysihtml5-toolbar div[data-wysihtml5-command-value="azul"] {
+    background: #3498db !important;
+}
+
+ul.wysihtml5-toolbar div[data-wysihtml5-command-value="verdeAgua"] {
+    background: #1abc9c !important;
+}
+
 .glyphicon-quote:before {
   content: "\201C";
   font-family: Georgia, serif;

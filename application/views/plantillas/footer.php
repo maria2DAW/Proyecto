@@ -36,15 +36,15 @@ var customTemplates = {
         var size = (customOptions.options && customOptions.options.size) ? ' btn-'+customOptions.options.size : '';
         return "<li>" +
             "<div class='btn-group'>" +
-            "<a class='btn btn-default" + size + "' data-wysihtml5-command='undo' tabindex='-1'><span class='fa fa-arrow-left'></span></a>" +
-            "<a class='btn btn-default" + size + "' data-wysihtml5-command='redo' tabindex='-1'><span class='fa fa-arrow-right'></span></a>" +
+            "<a class='btn btn-default" + size + "' data-wysihtml5-command='undo' tabindex='-1' title='Deshacer' ><span class='fa fa-arrow-left'></span></a>" +
+            "<a class='btn btn-default" + size + "' data-wysihtml5-command='redo' tabindex='-1' title='Rehacer'><span class='fa fa-arrow-right'></span></a>" +
             "</div>" +
             "</li>"+
             "<li>" +
             "<div class='btn-group'>" +
-            "<a class='btn btn-default" + size + "' data-wysihtml5-command='justifyLeft' tabindex='-1'><span class='fa fa-align-left'></span></a>" +
-            "<a class='btn btn-default" + size + "' data-wysihtml5-command='justifyCenter' tabindex='-1'><span class='fa fa-align-center'></span>r</a>" +
-            "<a class='btn btn-default" + size + "' data-wysihtml5-command='justifyRight' tabindex='-1'><span class='fa fa-align-right'></a>" +
+            "<a class='btn btn-default" + size + "' data-wysihtml5-command='justifyLeft' tabindex='-1' title='Alinear a la Izquierda'><span class='fa fa-align-left'></span></a>" +
+            "<a class='btn btn-default" + size + "' data-wysihtml5-command='justifyCenter' tabindex='-1' title='Centrar'><span class='fa fa-align-center'></span>r</a>" +
+            "<a class='btn btn-default" + size + "' data-wysihtml5-command='justifyRight' tabindex='-1' title='Alinear a la Derecha'><span class='fa fa-align-right'></a>" +
             "</div>" +
             "</li>";
     }
@@ -150,11 +150,13 @@ function cargarLista()
 
 </body>
 
-<div class="container">
-<footer>
-	<p>María Rengel Casimiro - Proyecto de Desarrollo de Aplicaciones Web.</p>	
-</footer>
-</div>
-
+<!-- FOOTER -->
+<footer id="f">
+    <div class="container">
+        <div class="row centered">
+            María Rengel Casimiro - Proyecto de Desarrollo de Aplicaciones Web.
+        </div><!-- row -->
+    </div><!-- container -->
+</footer><!-- Footer -->
 
 </html>

@@ -13,7 +13,7 @@
   }
   
   #wysihtml5-textarea {
-	width: 600px;
+	/*width: 600px;*/
     height: 500px;
     font-family: Verdana;
     font-size: 11px;
@@ -152,6 +152,14 @@
 
 .wysiwyg-color-ff7878 {
     color: #ff7878;
+}
+
+.wysiwyg-color-azul {
+    color: #3498db;
+}
+
+.wysiwyg-color-verdeAgua {
+    color: #1abc9c;
 }
 
 .wysiwyg-text-align-right {

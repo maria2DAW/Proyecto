@@ -258,7 +258,9 @@
           'wysiwyg-color-teal' : 1,
           'wysiwyg-color-aqua' : 1,
           'wysiwyg-color-orange' : 1,
-		  'wysiwyg-color-ff7878' : 1,
+		  'wysiwyg-color-ff7878' : 1, //Rosado
+          'wysiwyg-color-azul' : 1, //Azul
+          'wysiwyg-color-verdeAgua' : 1, //Verde Agua
 		  'wysiwyg-text-align-left': 1,
 		  'wysiwyg-text-align-center': 1,
 		  'wysiwyg-text-align-right': 1

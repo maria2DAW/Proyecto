@@ -1,26 +1,37 @@
-<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1 class="panel-title" align="center" >Login</h1>
+                </div>
 
-<head>Login</head>
+                <div class="panel-body">
+                    <form action='<?= base_url(); ?>index.php/Controlador_principal/logear' method='post' role="form">
 
-<br><br>
+                        <div class="form-group <?php if(validation_errors()) echo 'has-error has-feedback'; ?>">
+                            <label class="control-label" for='nomUsu' >Usuario: </label>
+                            <input class="form-control" type='text' name='nomUsu' id='nomUsu' value="<?= set_value('nomUsu'); ?>" />
+                            <?php if(validation_errors()) echo '<span class="glyphicon glyphicon-remove form-control-feedback"></span>'; ?>
+                            <?=form_error('nomUsu')?>
+                        </div>
 
-<form action='<?= base_url(); ?>index.php/Controlador_principal/logear' method='post'>
-	<label for='nomUsu' >Usuario: </label>
-	<input type='text' name='nomUsu' id='nomUsu' value="<?= set_value('nomUsu'); ?>" /><br><br>
-	
-	<label for='passUsu' >Contraseña: </label>
-	<input type='password' name='passUsu' id='passUsu' /><br><br>
-	
-	<input type='submit' value='Login' ><br><br>
-	
-</form>
+                        <div class="form-group <?php if(validation_errors()) echo 'has-error has-feedback'; ?>">
+                            <label class="control-label" for='passUsu' >Contraseña: </label>
+                            <input class="form-control" type='password' name='passUsu' id='passUsu' />
+                            <?php if(validation_errors()) echo '<span class="glyphicon glyphicon-remove form-control-feedback"></span>'; ?>
+                            <?=form_error('passUsu')?>
+                        </div>
 
-<div>
-        <?php echo validation_errors(); ?>
-</div>
+                        <input class="btn btn-rosado btn-block" type='submit' value='Login' ><br><br>
+                    </form>
 
-<br><br>
+                    <div>
+                        <a href="<?=base_url(); ?>index.php/Controlador_principal/formularioRegistro">Regístrate aquí</a>
+                    </div>
+                </div>
 
-<div>
-    <a href="<?=base_url(); ?>index.php/Controlador_principal/formularioRegistro">Regístrate aquí</a>
+            </div>
+        </div>
+    </div>
 </div>

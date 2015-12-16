@@ -84,4 +84,10 @@ class Modelo_cancion extends CI_Model
 		$qSqlA = $this->db->query('SELECT * FROM cancion c, album a, interprete i WHERE c.id_cancion = '.$idCancion.' AND c.album_cancion = a.id_album AND a.interprete_album = i.id_interprete');
 		return $qSqlA->row();
 	}
-}	
+
+    public function obtener_album_cancion($idCancion)
+    {
+        $qSqlA = $this->db->query('SELECT * FROM cancion c, album a WHERE c.id_cancion = '.$idCancion.' AND c.album_cancion = a.id_album');
+        return $qSqlA->row();
+    }
+}

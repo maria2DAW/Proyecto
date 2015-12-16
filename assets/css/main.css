@@ -25,6 +25,9 @@ body {
     
     margin-top: 70px;
 
+    /* Margin bottom by footer height */
+    /*margin-bottom: 60px;*/
+
     padding-top: 30px; /*Para que la barra de navegación no tape los contenidos de la parte superior */
 }
 
@@ -135,7 +138,7 @@ a:after {
    ========================================================================== */
 
 #headerwrap {
-	background: url(../img/header-bg.jpg) no-repeat center top;
+	/*background: url(../img/header-bg.jpg) no-repeat center top;*/
         background-color: #3498db;
 	margin-top: -20px;
 	padding-top:20px;
@@ -237,6 +240,12 @@ a:after {
 	background: #2d2d2d;
 	padding-top: 30px;
 	padding-bottom: 30px;
+
+    /*position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    /*height: 60px;*/
 }
 
 #f i {
@@ -410,6 +419,14 @@ a:after {
 
 .pricing-option .pricing-signup:hover {
     background: #ff7878;
+}
+
+.btn-rosado,
+.btn-rosado:hover,
+.btn-rosado:active {
+    color: white;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #ff7878;
 }
 
 

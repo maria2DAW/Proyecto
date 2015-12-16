@@ -56,7 +56,9 @@
           navy: "Azul Marino",
           blue: "Azul",
           orange: "Naranja",
-		  ff7878: "Rosado"
+		  ff7878: "Rosado",
+          azul: "Azul",
+          verdeAgua: "Verde Agua"
         }
     };
 }));

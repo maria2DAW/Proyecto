@@ -18,7 +18,7 @@
                 <li><a href='<?=base_url(); ?>index.php/Controlador_principal/indice_interpretes'>INTÉRPRETES</a></li>
                 <li><a href='<?=base_url(); ?>'>ÁLBUMES</a></li>
                 <li><a href='<?=base_url(); ?>index.php/Controlador_principal/indice_letras'>LETRAS</a></li>
-                <li><a href='<?=base_url(); ?>index.php/Controlador_principal/formularioLoguear'>LOGIN</a></li>
+                <li><a href='<?=base_url(); ?>index.php/Controlador_principal/<?=$enlaceLogin ?>'><span class="glyphicon glyphicon-user"></span>  <?=$login;?></a></li>
             </ul>
         </div><!--/.nav-collapse -->           
     </div>

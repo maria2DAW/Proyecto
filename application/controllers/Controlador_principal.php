@@ -23,6 +23,20 @@ class Controlador_principal extends CI_Controller {
 		$this->load->model('Modelo_pais','mod_pais');
 		$this->load->model('Modelo_tipo_interprete','mod_tipo_int');
 		$this->load->model('Modelo_genero','mod_gen');
+
+        if(! $this->mod_usu->existeSesionUsuario())
+        {
+            $this->data['login'] = 'LOG IN';
+            $this->data['enlaceLogin'] = 'formularioLoguear';
+        }
+
+        else
+        {
+            $this->data['login'] = $this->session->userdata['nombreregistro'];
+
+
+                $this->data['enlaceLogin'] = 'logear';
+        }
 	}
 
     public function establecerContenidoPrincipal($title, $contenido)
@@ -45,7 +59,7 @@ class Controlador_principal extends CI_Controller {
 
         $this->establecerContenidoPrincipal("Nuevo Intérprete", "formularioNuevoInterprete");
 	}
-	
+
 	function alpha_space($str)
 	{
 		//return ( ! preg_match("/^[a-zñÑáéíóúÁÉÍÓÚ ]+$/i", $str)) ? FALSE : TRUE;
@@ -193,11 +207,7 @@ class Controlador_principal extends CI_Controller {
 	}
 	
 	public function formularioLoguear() 
-	{		
-		/*$data['title'] = "Login";
-		$data['main_content'] = 'formLogin';
-		$this->load->view('plantillas/template', $data);*/
-
+	{
         $this->establecerContenidoPrincipal('Login', 'formLogin');
 	}
 	
@@ -205,7 +215,7 @@ class Controlador_principal extends CI_Controller {
 	{
         $pass = $this->input->post('passUsu');
 
-        $this->form_validation->set_error_delimiters('<div>','</div>');
+        $this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
 
 		$this->form_validation->set_rules('nomUsu', 'nombre de usuario', 'required|callback_validarUsuarioYPassword['.$pass.']');
 		$this->form_validation->set_rules('passUsu', 'contraseña', 'required');
@@ -215,6 +225,7 @@ class Controlador_principal extends CI_Controller {
 
 		if($this->form_validation->run() == false)
 		{
+            $data['main_content'] = 'indiceInterpretes';
 			$this->formularioLoguear();
 		}
 		
@@ -286,27 +297,25 @@ class Controlador_principal extends CI_Controller {
 		}
 
         $this->data['listaPaisesContinente'] = $listaPaisesContinente;
-	
-		/*$data['title'] = "Registro";
-		$data['main_content'] = 'registroUsuario';
-		$this->load->view('plantillas/template', $data);*/
 
-        $this->establecerContenidoPrincipal('Registro', 'registroUsuario');
+        $this->establecerContenidoPrincipal('Registro', 'formRegistroUsuario');
 	}
 	
 	public function guardar_datos_usuario()
 	{
+        $this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
+
 		$this->form_validation->set_rules('nombreUsuario', 'nombre de usuario', 'required|min_length[5]|max_length[20]|trim|is_unique[usuario.nombre_registro_usuario]');
 		$this->form_validation->set_rules('passUsuario', 'contraseña', 'required|exact_length[12]|trim|matches[pass2Usuario]|md5');
         $this->form_validation->set_rules('pass2Usuario', 'repetir contraseña', 'required|trim|md5');
-        $this->form_validation->set_rules('nombre', 'nombre', 'required|trim|alpha');
-        $this->form_validation->set_rules('apellidos', 'apellidos', 'required|trim|alpha');
+        $this->form_validation->set_rules('nombre', 'nombre', 'required|trim|callback_alpha_space');
+        $this->form_validation->set_rules('apellidos', 'apellidos', 'required|trim|callback_alpha_space');
         $this->form_validation->set_rules('email', 'e-mail', 'required|valid_email|trim|is_unique[usuario.email_usuario]');
 
         $this->form_validation->set_message('required', 'Debe introducir el campo %s');
         $this->form_validation->set_message('valid_email', 'Dirección de e-mail no válida');
         $this->form_validation->set_message('matches', 'Los campos %s y %s no coinciden');
-        $this->form_validation->set_message('alpha','El campo %s debe estar compuesto sólo por letras');
+        $this->form_validation->set_message('alpha_space','El campo %s debe estar compuesto sólo por letras');
         $this->form_validation->set_message('min_length','El campo %s debe tener al menos %s carácteres');
         $this->form_validation->set_message('max_length','El campo %s debe tener como máximo %s carácteres');
         $this->form_validation->set_message('exact_length','El campo %s debe tener %s carácteres');
@@ -458,6 +467,7 @@ class Controlador_principal extends CI_Controller {
 	public function mostrar_letra($idCancion)
 	{
         $this->data['interpreteLetra'] = $this->mod_can->obtener_interprete_cancion($idCancion);
+        $this->data['albumLetra'] = $this->mod_can->obtener_album_cancion($idCancion);
         $this->data['cancionObtenida'] = $this->mod_can->obtenerCancion($idCancion);
         $this->data['letraObtenida'] = $this->mod_let->obtenerLetra($idCancion);
 		

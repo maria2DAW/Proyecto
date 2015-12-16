@@ -80,7 +80,7 @@ class Modelo_usuario extends CI_Model
 	
 	public function comprobarUsuarioYPassword($usuarioIntroducido, $password)
     {
-        //comprobamos que el nombre de usuario (o el e-mail) y contrase�a coinciden
+        //comprobamos que el nombre de usuario (o el e-mail) y contraseña coinciden
         // y que el usuario no este dado de baja
 		
 		$sql = "SELECT * FROM usuario WHERE nombre_registro_usuario = ? AND password_usuario = ? AND baja = ? OR email_usuario = ? AND password_usuario = ? AND baja = ?;"; 
@@ -118,5 +118,21 @@ class Modelo_usuario extends CI_Model
 		$this->db->where('id_usuario', $idUsuario);
 		return $this->db->update('usuario', $campos);
 	}
+
+    public function existeSesionUsuario()
+    {
+        //Comprobamos si existe la variable de sesión username. En caso de no existir, le impediremos el paso a
+        //la página para usuarios registrados.
+
+        if(isset($this->session->userdata['nombreregistro']))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
 	
 }
