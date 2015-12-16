@@ -39,14 +39,23 @@ FIN AJAX
 **********************************************************************/
 
 $(document).ready(function () {
-        $('.navbar li').click(function(e) {
-        $('.navbar li.active').removeClass('active');
-        var $this = $(this);
-        if (!$this.hasClass('active')) {
-            $this.addClass('active');
-        }
-        e.preventDefault();
-    });     
+    $.each($('#navbar').find('li'), function() {
+        $(this).toggleClass('active',
+            $(this).find('a').attr('href') == window.location.pathname);
     });
-    
+
+    $('.textarea').wysihtml5({
+        "font-styles": true, //Font styling, e.g. h1, h2, etc. Default true
+        "emphasis": true, //Italics, bold, etc. Default true
+        "lists": true, //(Un)ordered lists, e.g. Bullets, Numbers. Default true
+        "html": true, //Button which allows you to edit the generated HTML. Default false
+        "link": true, //Button to insert a link. Default true
+        "image": true, //Button to insert an image. Default true,
+        "color": true //Button to change color of font
+    });
+});
+
+
+
+
     
