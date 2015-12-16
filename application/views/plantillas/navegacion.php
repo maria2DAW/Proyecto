@@ -1,13 +1,25 @@
 <body>
-<div class="container">
-	<nav class="navbar navbar-default navbar-static-top" role="navigation">
-		<ul class="nav navbar-nav">
-			<li><a class="navbar-brand" href='<?=base_url(); ?>'>Inicio</a></li>
-			<li><a href='<?=base_url(); ?>'>Acerca de</a></li>
-			<li><a href='<?=base_url(); ?>index.php/Controlador_principal/indice_interpretes'>Intérpretes</a></li>			
-			<li><a href='<?=base_url(); ?>'>Álbumes</a></li>
-			<li><a href='<?=base_url(); ?>index.php/Controlador_principal/indice_letras'>Letras</a></li>
-			<li><a href='<?=base_url(); ?>index.php/Controlador_principal/formularioLoguear'>Login</a></li>
-		</ul>
-	</nav>
-</div>
+    
+<!-- Fixed navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><i class="fa fa-music"></i> CANTICUM</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a href='<?=base_url(); ?>'>INICIO</a></li>
+                    <li><a href='<?=base_url(); ?>'>ACERCA DE</a></li>
+                    <li><a href='<?=base_url(); ?>index.php/Controlador_principal/indice_interpretes'>INTÉRPRETES</a></li>			
+                    <li><a href='<?=base_url(); ?>'>ÁLBUMES</a></li>
+                    <li><a href='<?=base_url(); ?>index.php/Controlador_principal/indice_letras'>LETRAS</a></li>
+                    <li><a href='<?=base_url(); ?>index.php/Controlador_principal/formularioLoguear'>LOGIN</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->           
+    </div>
+</nav>

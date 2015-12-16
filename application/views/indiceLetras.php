@@ -4,6 +4,10 @@
 
 <br><br>
 
+<a href='<?=base_url(); ?>index.php/Controlador_principal/vista_anyadir_letra'>Añadir letra</a>
+
+<br><br>
+
 <?php 
 
 foreach($listaCanciones as $cancion)
