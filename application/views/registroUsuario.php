@@ -11,12 +11,12 @@
 	<?=form_error('nombreUsuario'); ?><br><br>
 	
 	<label for='passUsuario' >Contraseña: </label>
-	<input type='password' name='passUsuario' id='passUsuario' /><br><br>
+	<input type='password' name='passUsuario' id='passUsuario' maxlength='12' /><br><br>
 	
 	<?=form_error('passUsuario'); ?><br><br>
 	
 	<label for='pass2Usuario' >Repita la contraseña: </label>
-	<input type='password' name='pass2Usuario' id='pass2Usuario' /><br><br>
+	<input type='password' name='pass2Usuario' id='pass2Usuario' maxlength='12' /><br><br>
 	
 	<?=form_error('pass2Usuario'); ?><br><br>
 	
@@ -46,7 +46,9 @@
 			
 			for($j = 0; $j < count($listaPaisesContinente[$i]); $j++)
 			{
-				echo "<option value='".$listaPaisesContinente[$i][$j]["id_pais"]."'>".$listaPaisesContinente[$i][$j]["nombre_pais"]."</option>";
+				echo "<option value='".$listaPaisesContinente[$i][$j]["id_pais"]."' ";
+                echo set_select('pais', $listaPaisesContinente[$i][$j]["id_pais"]);
+                echo ">".$listaPaisesContinente[$i][$j]["nombre_pais"]."</option>";
 			}
 			
 			echo "</optgroup>";

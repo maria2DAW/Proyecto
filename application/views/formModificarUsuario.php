@@ -28,8 +28,10 @@
 				
 				if($listaPaisesContinente[$i][$j]["id_pais"] == $usuarioObtenido->pais_usuario)
 				{
-					echo " selected='selected'";
+					echo " selected='selected' ";
 				}
+
+                echo set_select('pais', $listaPaisesContinente[$i][$j]["id_pais"]);
 				
 				echo ">".$listaPaisesContinente[$i][$j]["nombre_pais"]."</option>";
 			}

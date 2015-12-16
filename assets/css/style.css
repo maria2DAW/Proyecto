@@ -1,5 +1,5 @@
 *{
-	margin: 0 auto;
+	/*margin: 0 auto;*/
 }
 
 nav{
@@ -211,4 +211,11 @@ footer{
 
 .wysiwyg-clear-left {
   clear: left;
+}
+
+.listaGenerosInt{
+    height: 200px;
+    width: 300px;
+    overflow: auto;
+    border: 1px solid #000000;
 }
