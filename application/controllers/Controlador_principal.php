@@ -162,9 +162,7 @@ class Controlador_principal extends CI_Controller {
 
 		if($this->form_validation->run() == false)
 		{
-			$data['title'] = 'Errores';
-			$data['main_content'] = 'formLogin';
-			$this->load->view('plantillas/template', $data);
+			$this->formularioLoguear();
 		}
 		
 		else
@@ -176,8 +174,22 @@ class Controlador_principal extends CI_Controller {
 
             $this->session->set_userdata($datos_sesion);
 			
-			$data['title'] = $this->session->userdata['nombreregistro'];
-			$data['main_content'] = 'panelUsuario';
+			$nombreUsuario = $this->session->userdata['nombreregistro'];
+			
+			$data['title'] = $nombreUsuario;
+			
+			if($nombreUsuario == 'ADMIN')
+			{
+				$main_content = 'panelAdmin';
+			}
+			
+			else
+			{
+				$main_content = 'panelUsuario';
+			}
+			
+			
+			$data['main_content'] = $main_content;
 			$this->load->view('plantillas/template', $data);
 		}
 	}
@@ -347,12 +359,22 @@ class Controlador_principal extends CI_Controller {
 			$idAlb = $this->mod_alb->obtener_id_album_ultimo_insert();
 		}
 		
-		$this->mod_can->insertar_solo_nombre_cancion($tituloCancion, $idAlb, $codigoUsuario);
-		$idCan = $this->mod_can->obtener_id_cancion_ultimo_insert();
+		if(!$this->mod_can->comprobar_existencia_cancion($tituloCancion, $idAlb, $idInt))
+		{
+			$this->mod_can->insertar_solo_nombre_cancion($tituloCancion, $idAlb, $codigoUsuario);
+			$idCan = $this->mod_can->obtener_id_cancion_ultimo_insert();
+			
+			$this->mod_let->insertar_letra($idCan, $letraCancion);
+			
+			$this->index();
+		}
 		
-		$this->mod_let->insertar_letra($idCan, $letraCancion);
-		
-		$this->index();
+		else
+		{
+			$data['title'] = "Cancion existente";
+			$data['main_content'] = 'vistaAnyadirLetra';
+			$this->load->view('plantillas/template', $data);
+		}
 	}
 	
 	public function indice_letras()
@@ -366,6 +388,7 @@ class Controlador_principal extends CI_Controller {
 	
 	public function mostrar_letra($idCancion)
 	{
+		$data['interpreteLetra'] = $this->mod_can->obtener_interprete_cancion($idCancion);
 		$data['cancionObtenida'] = $this->mod_can->obtenerCancion($idCancion);
 		$data['letraObtenida'] = $this->mod_let->obtenerLetra($idCancion);
 		
@@ -374,5 +397,113 @@ class Controlador_principal extends CI_Controller {
 		$this->load->view('plantillas/template', $data);
 	}
 	
+	//Gestiones ADMIN
 	
+		//Tipos de interprete
+	
+	public function gestion_tipos_interprete()
+	{
+		$data['listaTiposInterprete'] = $this->mod_tipo_int->lista_tipos_interprete_odenada("nombre_tipo_interprete");
+		
+		$data['title'] = "Gestión de tipos de intérprete";
+		$data['main_content'] = 'gestionTiposInterprete';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function formularioNuevoTipoInterprete()
+	{
+		$data['title'] = "Nuevo Tipo de Intérprete";
+		$data['main_content'] = 'formNuevoTipoInterprete';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function guardar_datos_tipo_interprete()
+	{
+		$this->form_validation->set_rules('nomTipoInt', 'nombre del tipo de intérprete', 'required|alpha|min_length[3]|max_length[50]|trim|is_unique[tipo_interprete.nombre_tipo_interprete]');
+		
+        $this->form_validation->set_message('required', 'Debe introducir el %s');
+        $this->form_validation->set_message('alpha','El %s debe estar compuesto sólo por letras');
+        $this->form_validation->set_message('min_length','El %s debe tener al menos %s carácteres');
+        $this->form_validation->set_message('max_length','El %s debe tener como máximo %s carácteres');
+        $this->form_validation->set_message('is_unique','Este %s ya está registrado');
+		
+		if($this->form_validation->run() == false)
+		{
+			$this->formularioNuevoTipoInterprete();
+		}
+		
+		else 
+		{			
+			$nombreTipoInt = $this->input->post('nomTipoInt');
+			
+			$this->mod_tipo_int->nuevo_tipo_interprete($nombreTipoInt);
+			
+			$this->gestion_tipos_interprete();
+		}
+	}
+	
+	public function formularioModificarTipoInterprete($idTipoInt)
+	{
+		$data['tipoIntObtenido'] = $this->mod_tipo_int->obtener_tipo_interprete($idTipoInt);
+		
+		$data['title'] = "Modificar Tipo de Intérprete";
+		$data['main_content'] = 'formModificarTipoInterprete';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function modificar_datos_tipo_interprete()
+	{		
+		$idTipoInt = $this->input->post('idTipoInt');
+		
+		$this->form_validation->set_rules('nomTipoInt', 'nombre del tipo de intérprete', 'required|alpha|min_length[3]|max_length[50]|trim|is_unique[tipo_interprete.nombre_tipo_interprete]');
+		
+        $this->form_validation->set_message('required', 'Debe introducir el %s');
+        $this->form_validation->set_message('alpha','El %s debe estar compuesto sólo por letras');
+        $this->form_validation->set_message('min_length','El %s debe tener al menos %s carácteres');
+        $this->form_validation->set_message('max_length','El %s debe tener como máximo %s carácteres');
+        $this->form_validation->set_message('is_unique','Este %s ya está registrado');
+		
+		if($this->form_validation->run() == false)
+		{
+			$this->formularioModificarTipoInterprete($idTipoInt);
+		}
+		
+		else 
+		{			
+			$nombreTipoInt = $this->input->post('nomTipoInt');
+			
+			$this->mod_tipo_int->modificar_tipo_interprete($idTipoInt, $nombreTipoInt);
+			
+			$this->gestion_tipos_interprete();
+		}
+	}
+	
+	public function eliminarTipoInterprete($idTipoInt)
+	{
+		$this->mod_tipo_int->eliminar_tipo_interprete($idTipoInt);
+		
+		$this->gestion_tipos_interprete();
+	}
+	
+		//FIN Tipos de interprete
+		
+		//Usuario
+	
+	public function gestion_usuarios()
+	{
+		$data['listaUsuarios'] = $this->mod_usu->lista_usuarios_odenada("nombre_registro_usuario");
+		
+		$data['title'] = "Gestión de Usuarios";
+		$data['main_content'] = 'gestionUsuarios';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function dar_de_baja_usuario($idUsuario)
+	{
+		$this->mod_usu->baja_usuario($idUsuario);
+		
+		$this->gestion_usuarios();
+	}
+	
+	//FIN Usuario
 }	

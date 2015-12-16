@@ -1,7 +1,8 @@
 <br>
 
-<h3><?=$cancionObtenida->nombre_cancion; ?></h3>
-<br>
+<h3><?=$interpreteLetra->nombre_interprete; ?></h3><br>
+
+<b><?=$cancionObtenida->nombre_cancion; ?></b><br><br>
 
 <div>
 
