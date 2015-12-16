@@ -16,7 +16,7 @@ class Modelo_album extends CI_Model
     	return $eSqlA->result();
     }
 	
-	public function insertar_album($nombreAlb, $interpreteAlb, $generoAlb, $numPistas, $anyoAlb, $informacionAlb, $imagenAlb)
+	public function insertar_album($nombreAlb, $interpreteAlb, $generoAlb, $numPistas, $anyoAlb, $informacionAlb, $imagenAlb, $usuarioAlb)
 	{
 		$campos = array(
 		'id_album' => null,
@@ -26,7 +26,8 @@ class Modelo_album extends CI_Model
 		'numero_pistas' => $numPistas,
 		'anyo_lanzamiento' => $anyoAlb,
 		'informacion_album' => $informacionAlb,
-		'imagen_album' => $imagenAlb
+		'imagen_album' => $imagenAlb,
+		'usuario_album' => $usuarioAlb
 		);
 		
 		$this->db->insert('album',$campos);

@@ -26,21 +26,12 @@ class Modelo_usuario extends CI_Model
 	
 	public function comprobarUsuarioYPassword($usuarioIntroducido, $password)
     {
-        //comprobamos que el nombre de usuario y contraseña coinciden
+        //comprobamos que el nombre de usuario (o el e-mail) y contraseña coinciden
         // y que el usuario no este dado de baja
-
-        /*$data = array(
-            'nombreregistro' => $nombreUsuario,
-            'passwordusuario' => $password,
-        	'baja'=> 0
-        );
-
-        $query = $this->db->get_where('usuario',$data);*/
 		
-		$this->db->where('nombre_registro_usuario', $usuarioIntroducido);
-		$this->db->or_where('email_usuario', $usuarioIntroducido);
-		$this->db->where('baja', 0);
-		$query = $this->db->get('usuario');
+		$sql = "SELECT * FROM usuario WHERE nombre_registro_usuario = ? AND password_usuario = ? AND baja = ? OR email_usuario = ? AND password_usuario = ? AND baja = ?;"; 
+
+		$query = $this->db->query($sql, array($usuarioIntroducido, $password, 0, $usuarioIntroducido, $password, 0));
 
         return $query->result_array();
     }
@@ -48,6 +39,13 @@ class Modelo_usuario extends CI_Model
 	public function cerrarSesion()
 	{
 		return $this->session->sess_destroy();
+	}
+	
+	public function obtener_id_usuario($nombreRegistroUsuario)
+	{
+		$qSqlA = $this->db->query('SELECT id_usuario from usuario where nombre_registro_usuario = "'.$nombreRegistroUsuario.'";');
+		$row = $qSqlA->row();
+		return $row->id_usuario;
 	}
 	
 }

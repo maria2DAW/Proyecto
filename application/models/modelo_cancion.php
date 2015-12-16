@@ -16,7 +16,7 @@ class Modelo_cancion extends CI_Model
     	return $eSqlA->result();
     }
 	
-	public function insertar_cancion($nombreCan, $albumCan, $generoCan, $duracionCan, $compositorCan, $comentarioCan, $enlaceYou)
+	public function insertar_cancion($nombreCan, $albumCan, $generoCan, $duracionCan, $compositorCan, $comentarioCan, $enlaceYou, $usuarioCan)
 	{
 		$campos = array(
 		'id_cancion' => null,
@@ -26,7 +26,8 @@ class Modelo_cancion extends CI_Model
 		'duracion_cancion' => $duracionCan,
 		'compositor_cancion' => $compositorCan,
 		'comentario_cancion' => $comentarioCan,
-		'enlace_youtube' => $enlaceYou
+		'enlace_youtube' => $enlaceYou,
+		'usuario_cancion' => $usuarioCan
 		);
 		
 		$this->db->insert('interprete',$campos);

@@ -16,7 +16,7 @@ class Modelo_interprete extends CI_Model
     	return $eSqlA->result();
     }	
 	
-	public function insertar_interprete($nombreInt, $tipoInt, $generoInt, $origenInt, $biografiaInt, $imagenInt)
+	public function insertar_interprete($nombreInt, $tipoInt, $generoInt, $origenInt, $biografiaInt, $imagenInt, $usuarioInt)
 	{
 		$campos = array(
 		'id_interprete' => null,
@@ -25,7 +25,8 @@ class Modelo_interprete extends CI_Model
 		'genero_interprete' => $generoInt,
 		'origen_interprete' => $origenInt,
 		'biografia_interprete' => $biografiaInt,
-		'imagen_interprete' => $imagenInt
+		'imagen_interprete' => $imagenInt,
+		'usuario_interprete' => $usuarioInt
 		);
 		
 		$this->db->insert('interprete',$campos);

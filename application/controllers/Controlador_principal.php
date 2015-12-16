@@ -60,7 +60,10 @@ class Controlador_principal extends CI_Controller {
 			$this->load->view('plantillas/template', $data);
 		}*/
 		
-		$this->mod_int->insertar_interprete($nombreInt, $tipoInt, $generoInt, $origenInt, $biografiaInt, $imagenInt);
+		$nombreUsuario = $this->session->userdata['nombreregistro'];
+		$codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
+		
+		$this->mod_int->insertar_interprete($nombreInt, $tipoInt, $generoInt, $origenInt, $biografiaInt, $imagenInt, $codigoUsuario);
 		
 		$data['title'] = "Inicio";
 		$data['main_content'] = 'inicio';
@@ -113,7 +116,10 @@ class Controlador_principal extends CI_Controller {
 		
 		$codigoInterprete = $this->mod_int->obtener_id_interprete($InterpreteAlb);
 		
-		$this->mod_alb->insertar_album($nombreAlb, $codigoInterprete, $generoAlb, $numeroPis, $anyoLan, $informacionAlb, $imagenAlb);
+		$nombreUsuario = $this->session->userdata['nombreregistro'];
+		$codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
+		
+		$this->mod_alb->insertar_album($nombreAlb, $codigoInterprete, $generoAlb, $numeroPis, $anyoLan, $informacionAlb, $imagenAlb, $codigoUsuario);
 		
 		$data['title'] = 'Inicio';
 		$data['main_content'] = 'inicio';
@@ -141,7 +147,7 @@ class Controlador_principal extends CI_Controller {
 
 		if($this->form_validation->run() == false)
 		{
-			$data['title'] = 'Erroreeeesss';
+			$data['title'] = 'Errores';
 			$data['main_content'] = 'formLogin';
 			$this->load->view('plantillas/template', $data);
 		}
@@ -156,7 +162,7 @@ class Controlador_principal extends CI_Controller {
             $this->session->set_userdata($datos_sesion);
 			
 			$data['title'] = $this->session->userdata['nombreregistro'];
-			$data['main_content'] = 'formLogin';
+			$data['main_content'] = 'panelUsuario';
 			$this->load->view('plantillas/template', $data);
 		}
 	}
@@ -167,12 +173,22 @@ class Controlador_principal extends CI_Controller {
 
         if($loginValido)
         {
+			//echo $loginValido[0]['nombre_usuario'];			
             return true;
         }
 
         else
         {
-            return false;
+            return false;			
         }
     }
+	
+	public function cerrarSesion()
+	{
+		$this->mod_usu->cerrarSesion();
+		
+		$data['title'] = "Login";
+		$data['main_content'] = 'formLogin';
+		$this->load->view('plantillas/template', $data);
+	}
 }	
