@@ -309,9 +309,6 @@ class Controlador_principal extends CI_Controller {
 	public function vista_info_interpretes($idInterprete)
 	{
 		$data['infoInterpretes'] = $this->mod_int->obtener_interprete_por_id($idInterprete);
-		$data['tipoInterprete'] = $this->mod_tipo_int->obtener_nombre_tipo_interprete($data['infoInterpretes'][0]->tipo_interprete);
-		$data['usuarioInterprete'] = $this->mod_usu->obtener_nombre_usuario($data['infoInterpretes'][0]->usuario_interprete);
-		
 		$data["consulta"] = $this->db->last_query();
 		
 		$camposInt = $this->mod_int->obtener_campos_interprete();
@@ -320,13 +317,6 @@ class Controlador_principal extends CI_Controller {
 		
 		$data['title'] = "Información de ".$data['infoInterpretes'][0]->nombre_interprete;
 		$data['main_content'] = 'vistaInformacionInterprete';
-		$this->load->view('plantillas/template', $data);
-	}
-	
-	public function vista_anyadir_letra()
-	{
-		$data['title'] = "Añadir una nueva letra";
-		$data['main_content'] = 'vistaAnyadirLetra';
 		$this->load->view('plantillas/template', $data);
 	}
 	
