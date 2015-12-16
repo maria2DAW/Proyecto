@@ -11,7 +11,7 @@
 foreach($listaInterpretesPorLetra as $interpretePorLetra)
 { ?>
 	<ul>
-		<li><?=$interpretePorLetra->nombre_interprete;?></li>
+		<li><a href="<?= base_url(); ?>index.php/Controlador_principal/vista_info_interpretes/<?=$interpretePorLetra->id_interprete;?>" ><?=$interpretePorLetra->nombre_interprete;?><a></li>
 	</ul>
 	
 <?php

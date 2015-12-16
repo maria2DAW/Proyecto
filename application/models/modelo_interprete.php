@@ -85,5 +85,24 @@ class Modelo_interprete extends CI_Model
     	$row = $qSqlA->row();
 		return $row->id_interprete;
 	}
+	
+	public function obtener_id_interprete_ultimo_insert()
+	{
+		$insert_id = $this->db->insert_id();
+		return  $insert_id;
+	}
+	
+	public function obtener_interprete_por_id($idInterprete)
+    {
+    	$qSqlA = 'SELECT * from interprete WHERE id_interprete = '.$idInterprete;
+    	$eSqlA = $this->db->query($qSqlA);
+    	return $eSqlA->result();
+    }
+	
+	public function obtener_campos_interprete()
+    {
+		$campos = $this->db->list_fields('interprete');
+		return $campos;
+    }
 }	
 	

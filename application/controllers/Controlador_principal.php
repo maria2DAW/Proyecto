@@ -41,7 +41,7 @@ class Controlador_principal extends CI_Controller {
 		$tipoInt = $this->input->post('tipoInt');
 		$origenInt = $this->input->post('orgInt');
 		$biografiaInt = $this->input->post('bioInt');
-		$imagenInt = null;
+		$imagenInt = $this->input->post('imgInt');
 		
 		$config['upload_path'] = './assets/img/';
 		$config['allowed_types'] = 'gif|jpg|png';
@@ -70,15 +70,18 @@ class Controlador_principal extends CI_Controller {
 		
 		$this->mod_int->insertar_interprete($nombreInt, $tipoInt, $origenInt, $biografiaInt, $imagenInt, $codigoUsuario);
 		
+		$idInsertInterprete = $this->mod_int->obtener_id_interprete_ultimo_insert();
+		$data["idInsertInterprete"] = $idInsertInterprete;
+		
 		$generosInterprete = $this->input->post('genInt');
 		
 		foreach($generosInterprete as $generoInte)
 		{
-			$this->mod_gen->insertar_genero_interprete($idInt, $generoInte);
+			$this->mod_gen->insertar_genero_interprete($idInsertInterprete, $generoInte);
 		}
 		
-		$data['title'] = "Inicio";
-		$data['main_content'] = 'inicio';
+		$data['title'] = "Datos intérprete";
+		$data['main_content'] = 'haciendoPruebas';
 		$this->load->view('plantillas/template', $data);
 	}
 	
@@ -204,8 +207,6 @@ class Controlador_principal extends CI_Controller {
 	
 	public function formularioRegistro() 
 	{
-		//$data['listaPaises'] = $this->mod_pais->lista_paises();
-		
 		$listaContinentes = array('Asia','Africa','Europe','North America','Oceania','South America');
 		$data['listaContinentes'] = $listaContinentes;
 		
@@ -264,6 +265,8 @@ class Controlador_principal extends CI_Controller {
 	
 	public function indice_interpretes()
 	{
+		$data["consulta"] = $this->db->last_query();
+		
 		$data['title'] = "Índice de intérpretes";
 		$data['main_content'] = 'indiceInterpretes';
 		$this->load->view('plantillas/template', $data);
@@ -301,6 +304,30 @@ class Controlador_principal extends CI_Controller {
 		/*$data['title'] = "Índice de intérpretes que empiezan por ".$letra;
 		$data['main_content'] = 'vistaInterpretesPorIndiceLetra';
 		$this->load->view('plantillas/template', $data);*/
+	}
+	
+	public function vista_info_interpretes($idInterprete)
+	{
+		$data['infoInterpretes'] = $this->mod_int->obtener_interprete_por_id($idInterprete);
+		$data['tipoInterprete'] = $this->mod_tipo_int->obtener_nombre_tipo_interprete($data['infoInterpretes'][0]->tipo_interprete);
+		$data['usuarioInterprete'] = $this->mod_usu->obtener_nombre_usuario($data['infoInterpretes'][0]->usuario_interprete);
+		
+		$data["consulta"] = $this->db->last_query();
+		
+		$camposInt = $this->mod_int->obtener_campos_interprete();
+		
+		
+		
+		$data['title'] = "Información de ".$data['infoInterpretes'][0]->nombre_interprete;
+		$data['main_content'] = 'vistaInformacionInterprete';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function vista_anyadir_letra()
+	{
+		$data['title'] = "Añadir una nueva letra";
+		$data['main_content'] = 'vistaAnyadirLetra';
+		$this->load->view('plantillas/template', $data);
 	}
 	
 	

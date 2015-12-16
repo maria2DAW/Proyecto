@@ -4,6 +4,10 @@
 
 <br><br>
 
+<?=$consulta; ?>
+
+<br><br>
+
 <a onclick="cargarSimbolos()" >#</a><?=" | ";?>
 
 <?php 
