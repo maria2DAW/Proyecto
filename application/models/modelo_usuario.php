@@ -48,4 +48,11 @@ class Modelo_usuario extends CI_Model
 		return $row->id_usuario;
 	}
 	
+	public function obtener_nombre_usuario($idUsuario)
+	{
+		$qSqlA = $this->db->query('SELECT nombre_registro_usuario from usuario where id_usuario = '.$idUsuario.';');
+		$row = $qSqlA->row();
+		return $row->nombre_registro_usuario;
+	}
+	
 }
