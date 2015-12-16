@@ -52,12 +52,11 @@ class Modelo_interprete extends CI_Model
 		$this->db->insert('interprete',$campos);
 	}
 	
-	public function insertar_solo_nombre_interprete($nombreInt, $usuarioInt)
+	public function insertar_solo_nombre_interprete($nombreInt)
 	{
 		$campos = array(
 		'id_interprete' => null,
-		'nombre_interprete' => $nombreInt,
-		'usuario_interprete' => $usuarioInt
+		'nombre_interprete' => $nombreInt
 		);
 		
 		$this->db->insert('interprete',$campos);
@@ -67,7 +66,7 @@ class Modelo_interprete extends CI_Model
 	{
 		$existe = false;
 		
-		/*$listaInterpretes = $this->lista_interpretes();
+		$listaInterpretes = $this->lista_interpretes();
 		
 		foreach ($listaInterpretes as $interprete)
 		{
@@ -75,14 +74,6 @@ class Modelo_interprete extends CI_Model
 			{
 				$existe = true;
 			}
-		}*/
-		
-		$qSqlA = 'SELECT * from interprete WHERE nombre_interprete = "'.$nombreInterprete.'";';
-    	$eSqlA = $this->db->query($qSqlA);
-		
-		if($eSqlA->num_rows() > 0)
-		{
-			$existe = true;
 		}
 		
 		return $existe;
@@ -100,13 +91,6 @@ class Modelo_interprete extends CI_Model
 		$insert_id = $this->db->insert_id();
 		return  $insert_id;
 	}
-	
-	public function obtener_interprete_por_nombre($nombreInterprete)
-    {
-    	$qSqlA = 'SELECT * from interprete WHERE nombre_interprete = '.$nombreInterprete;
-    	$eSqlA = $this->db->query($qSqlA);
-    	return $eSqlA->row();
-    }
 	
 	public function obtener_interprete_por_id($idInterprete)
     {

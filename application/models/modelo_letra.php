@@ -16,20 +16,15 @@ class Modelo_letra extends CI_Model
     	return $eSqlA->result();
     }
 	
-	public function insertar_letra($cancionLetra, $contenidoLetra)
+	public function insertar_letra($cancionLetra, $contenidoLetra, $usuarioLetra)
 	{
 		$campos = array(
 		'id_letra_cancion' => null,
 		'cancion_letra' => $cancionLetra,
 		'contenido_letra' => $contenidoLetra,
+		'usuario_letra' => $usuarioLetra,
 		);
 		
 		$this->db->insert('letra_cancion',$campos);
-	}
-	
-	public function eliminar_letra($idLetra)
-	{
-		$this->db->where('id_letra_cancion', $idLetra);
-		$this->db->delete('letra_cancion');
 	}
 }

@@ -32,43 +32,37 @@ class Modelo_album extends CI_Model
 		$this->db->insert('album',$campos);
 	}
 	
-	public function insertar_solo_nombre_album($nombreAlb, $interpreteAlb, $usuarioAlb)
+	public function insertar_solo_nombre_album($nombreAlb)
 	{
 		$campos = array(
 		'id_album' => null,
-		'nombre_album' => $nombreAlb,
-		'interprete_album' => $interpreteAlb,
-		'usuario_album' => $usuarioAlb
+		'nombre_album' => $nombreAlb
 		);
 		
 		$this->db->insert('album',$campos);
 	}
 	
-	public function comprobar_existencia_album($interpreteAlbum, $nombreAlbum)
+	public function comprobar_existencia_album($nombreAlbum)
 	{
 		$existe = false;
 		
-		$qSqlA = 'SELECT * from album WHERE nombre_album = "'.$nombreAlbum.'" AND interprete_album = '.$interpreteAlbum;
-    	$eSqlA = $this->db->query($qSqlA);
+		$listaAlbumes = $this->lista_albumes();
 		
-		if($eSqlA->num_rows() > 0)
+		foreach ($listaAlbumes as $album)
 		{
-			$existe = true;
+			if($album->nombre_album == $nombreAlbum)
+			{
+				$existe = true;
+			}
 		}
 		
 		return $existe;
 	}
 	
-	public function obtener_id_album($interpreteAlbum, $nombreAlbum)
+	public function obtener_id_album($nombreAlbum)
 	{
-		$qSqlA = $this->db->query('SELECT * from album WHERE nombre_album = "'.$nombreAlbum.'" AND interprete_album = '.$interpreteAlbum);
+		$qSqlA = $this->db->query('SELECT id_album from album where nombre_album = "'.$nombreAlbum.'";');
     	$row = $qSqlA->row();
 		return $row->id_album;
-	}
-	
-	public function obtener_id_album_ultimo_insert()
-	{
-		$insert_id = $this->db->insert_id();
-		return  $insert_id;
 	}
 }	
