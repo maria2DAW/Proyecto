@@ -16,13 +16,12 @@ class Modelo_album extends CI_Model
     	return $eSqlA->result();
     }
 	
-	public function insertar_album($nombreAlb, $interpreteAlb, $generoAlb, $numPistas, $anyoAlb, $informacionAlb, $imagenAlb, $usuarioAlb)
+	public function insertar_album($nombreAlb, $interpreteAlb, $numPistas, $anyoAlb, $informacionAlb, $imagenAlb, $usuarioAlb)
 	{
 		$campos = array(
 		'id_album' => null,
 		'nombre_album' => $nombreAlb,
 		'interprete_album' => $interpreteAlb,
-		'genero_album' => $generoAlb,
 		'numero_pistas' => $numPistas,
 		'anyo_lanzamiento' => $anyoAlb,
 		'informacion_album' => $informacionAlb,

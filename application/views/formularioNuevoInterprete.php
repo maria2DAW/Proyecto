@@ -10,13 +10,19 @@
 	
 	<label for='tipoInt' >Tipo de intérprete: </label>
 	<select name="tipoInt" id="tipoInt">
-		<option>Cantante</option>
-		<option>Banda</option>
-		<option>Grupo Musical</option>
+		<!--<option>Cantante</option>
+		<option>Banda</option>-->
+		
+		<?php
+		
+		foreach($listaTiposInterprete as $tipoInterprete)
+		{
+			echo "<option value='".$tipoInterprete->id_tipo_interprete."'>".$tipoInterprete->nombre_tipo_interprete."</option>";
+		}
+		
+		?>
+				
 	</select><br><br>
-	
-	<label for='genInt' >Género del intérprete: </label>
-	<input type='text' name='genInt' id='genInt' /><br><br>
 	
 	<label for='orgInt' >Origen del intérprete: </label>
 	<input type='text' name='orgInt' id='orgInt' /><br><br>
@@ -24,7 +30,7 @@
 	<label for='bioInt' >Biografía del interprete: </label><br>
 	<textarea name="bioInt" id="bioInt"></textarea><br><br>
 	
-	<label for='orgInt' >Imagen del intérprete: </label>
+	<label for='imgInt' >Imagen del intérprete: </label>
 	<input type='file' name='imgInt' id='imgInt' /><br><br>
 	
 	<input type='submit' value='Enviar Datos' ><br><br>

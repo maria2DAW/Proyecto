@@ -12,11 +12,12 @@ class Controlador_principal extends CI_Controller {
 		$this->load->model('modelo_cancion','mod_can');
 		$this->load->model('modelo_letra','mod_let');
 		$this->load->model('modelo_usuario','mod_usu');
+		$this->load->model('modelo_pais','mod_pais');
+		$this->load->model('modelo_tipo_interprete','mod_tipo_int');
 	}
 	
 	public function index() 
-	{
-		
+	{		
 		$data['title'] = "Inicio";
 		$data['main_content'] = 'inicio';
 		$this->load->view('plantillas/template', $data);
@@ -24,6 +25,8 @@ class Controlador_principal extends CI_Controller {
 	
 	public function formularioNuevoInterprete() 
 	{
+		$data['listaTiposInterprete'] = $this->mod_tipo_int->lista_tipos_interprete();
+		
 		$data['title'] = "Nuevo Intérprete";
 		$data['main_content'] = 'formularioNuevoInterprete';
 		$this->load->view('plantillas/template', $data);
@@ -33,7 +36,6 @@ class Controlador_principal extends CI_Controller {
 	{
 		$nombreInt = $this->input->post('nomInt');
 		$tipoInt = $this->input->post('tipoInt');
-		$generoInt = $this->input->post('genInt');
 		$origenInt = $this->input->post('orgInt');
 		$biografiaInt = $this->input->post('bioInt');
 		$imagenInt = null;
@@ -63,15 +65,15 @@ class Controlador_principal extends CI_Controller {
 		$nombreUsuario = $this->session->userdata['nombreregistro'];
 		$codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
 		
-		$this->mod_int->insertar_interprete($nombreInt, $tipoInt, $generoInt, $origenInt, $biografiaInt, $imagenInt, $codigoUsuario);
+		$this->mod_int->insertar_interprete($nombreInt, $tipoInt, $origenInt, $biografiaInt, $imagenInt, $codigoUsuario);
 		
 		$data['title'] = "Inicio";
 		$data['main_content'] = 'inicio';
 		$this->load->view('plantillas/template', $data);
 	}
 	
-	public function formularioNuevoAlbum() {
-		
+	public function formularioNuevoAlbum() 
+	{		
 		$data['title'] = "Nuevo Álbum";
 		$data['main_content'] = 'formularioNuevoAlbum';
 		$this->load->view('plantillas/template', $data);
@@ -126,8 +128,8 @@ class Controlador_principal extends CI_Controller {
 		$this->load->view('plantillas/template', $data);
 	}
 	
-	public function formularioLoguear() {
-		
+	public function formularioLoguear() 
+	{		
 		$data['title'] = "Login";
 		$data['main_content'] = 'formLogin';
 		$this->load->view('plantillas/template', $data);
@@ -187,8 +189,90 @@ class Controlador_principal extends CI_Controller {
 	{
 		$this->mod_usu->cerrarSesion();
 		
-		$data['title'] = "Login";
-		$data['main_content'] = 'formLogin';
+		$this->formularioLoguear();
+	}
+	
+	public function formularioRegistro() 
+	{
+		$data['listaPaises'] = $this->mod_pais->lista_paises();
+	
+		$data['title'] = "Registro";
+		$data['main_content'] = 'registroUsuario';
 		$this->load->view('plantillas/template', $data);
 	}
+	
+	public function guardar_datos_usuario()
+	{
+		$this->form_validation->set_rules('nombreUsuario', 'nombre de usuario', 'required|min_length[5]|max_length[20]|trim|is_unique[usuario.nombre_registro_usuario]');
+		$this->form_validation->set_rules('passUsuario', 'contraseña', 'required|exact_length[12]|trim|matches[pass2Usuario]|md5');
+        $this->form_validation->set_rules('pass2Usuario', 'repetir contraseña', 'required|trim|md5');
+        $this->form_validation->set_rules('nombre', 'nombre', 'required|trim|alpha');
+        $this->form_validation->set_rules('apellidos', 'apellidos', 'required|trim|alpha');
+        $this->form_validation->set_rules('email', 'e-mail', 'required|valid_email|trim|is_unique[usuario.email_usuario]');
+
+        $this->form_validation->set_message('required', 'Debe introducir el campo %s');
+        $this->form_validation->set_message('valid_email', 'Dirección de e-mail no válida');
+        $this->form_validation->set_message('matches', 'Los campos %s y %s no coinciden');
+        $this->form_validation->set_message('alpha','El campo %s debe estar compuesto sólo por letras');
+        $this->form_validation->set_message('min_length','El campo %s debe tener al menos %s carácteres');
+        $this->form_validation->set_message('max_length','El campo %s debe tener como máximo %s carácteres');
+        $this->form_validation->set_message('exact_length','El campo %s debe tener %s carácteres');
+        $this->form_validation->set_message('is_unique','Este %s ya está registrado');
+		
+		if($this->form_validation->run() == false)
+		{
+			$this->formularioRegistro();
+		}
+		
+		else 
+		{			
+			$nombreUsu = $this->input->post('nombreUsuario');
+			$email = $this->input->post('email');
+			$pass = $this->input->post('passUsuario');
+			$nombre = $this->input->post('nombre');
+			$apellidos = $this->input->post('apellidos');
+			$pais = $this->input->post('pais');
+			
+			$this->mod_usu->insertar_usuario($nombreUsu, $email, $pass, $nombre, $apellidos, $pais);
+			
+			$this->index();
+		}
+	}
+	
+	public function indice_interpretes()
+	{
+		$data['title'] = "Índice de intérpretes";
+		$data['main_content'] = 'indiceInterpretes';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function interpretes_por_indice_simbolo()
+	{
+		$data['listaInterpretesPorSimbolo'] = $this->mod_int->lista_interpretes_empiezan_por_otro_caracter();
+		
+		$data['title'] = "Índice de intérpretes";
+		$data['main_content'] = 'vistaInterpretesPorIndiceSimbolo';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function interpretes_por_indice_numero()
+	{
+		$data['listaInterpretesPorNumero'] = $this->mod_int->lista_interpretes_empiezan_por_numero();
+		
+		$data['title'] = "Índice de intérpretes";
+		$data['main_content'] = 'vistaInterpretesPorIndiceNumero';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function interpretes_por_indice_letra($letra)
+	{
+		$data['listaInterpretesPorLetra'] = $this->mod_int->lista_interpretes_empiezan_por_letra($letra);
+		
+		$data['title'] = "Índice de intérpretes que empiezan por ".$letra;
+		$data['letra'] = $letra;
+		$data['main_content'] = 'vistaInterpretesPorIndiceLetra';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	
 }	

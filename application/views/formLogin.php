@@ -18,3 +18,9 @@
 <div>
         <?php echo validation_errors(); ?>
 </div>
+
+<br><br>
+
+<div>
+    <a href="<?=base_url(); ?>index.php/Controlador_principal/formularioRegistro">Regístrate aquí</a>
+</div>

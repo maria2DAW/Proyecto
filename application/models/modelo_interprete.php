@@ -14,15 +14,35 @@ class Modelo_interprete extends CI_Model
     	$qSqlA = 'SELECT * from interprete';
     	$eSqlA = $this->db->query($qSqlA);
     	return $eSqlA->result();
-    }	
+    }
 	
-	public function insertar_interprete($nombreInt, $tipoInt, $generoInt, $origenInt, $biografiaInt, $imagenInt, $usuarioInt)
+	public function lista_interpretes_empiezan_por_letra($letra)
+    {
+    	$qSqlA = "SELECT * FROM interprete WHERE nombre_interprete LIKE '".$letra."%' ORDER BY nombre_interprete";
+    	$eSqlA = $this->db->query($qSqlA);
+    	return $eSqlA->result();
+    }
+	
+	public function lista_interpretes_empiezan_por_numero()
+    {
+    	$qSqlA = "SELECT * FROM interprete WHERE nombre_interprete REGEXP '^[0-9]' ORDER BY nombre_interprete";
+    	$eSqlA = $this->db->query($qSqlA);
+    	return $eSqlA->result();
+    }
+	
+	public function lista_interpretes_empiezan_por_otro_caracter()
+    {
+    	$qSqlA = "SELECT * FROM interprete WHERE nombre_interprete REGEXP '^[^[:alnum:]]' ORDER BY nombre_interprete";
+    	$eSqlA = $this->db->query($qSqlA);
+    	return $eSqlA->result();
+    }
+	
+	public function insertar_interprete($nombreInt, $tipoInt, $origenInt, $biografiaInt, $imagenInt, $usuarioInt)
 	{
 		$campos = array(
 		'id_interprete' => null,
 		'nombre_interprete' => $nombreInt,
 		'tipo_interprete' => $tipoInt,
-		'genero_interprete' => $generoInt,
 		'origen_interprete' => $origenInt,
 		'biografia_interprete' => $biografiaInt,
 		'imagen_interprete' => $imagenInt,
