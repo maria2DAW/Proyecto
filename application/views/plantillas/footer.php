@@ -20,7 +20,7 @@
 
 <script>
 
-    $('#genInt').multipleSelect({
+    $('.selectGeneros').multipleSelect({
         selectAll: false,
         multiple: true,
         multipleWidth: 160,

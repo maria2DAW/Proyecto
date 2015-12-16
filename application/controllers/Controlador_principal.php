@@ -35,6 +35,27 @@ class Controlador_principal extends CI_Controller {
             $this->data['login'] = $this->session->userdata['nombreregistro'];
             $this->data['enlaceLogin'] = 'accesoUsuarios';
         }
+		
+		//Lista de tipos de intérpretes
+        $this->data['listaTiposInterprete'] = $this->mod_tipo_int->lista_tipos_interprete();
+
+		//Lista de géneros
+        $this->data['listaGeneros'] = $this->mod_gen->lista_generos();
+	}
+	
+	function alpha_space($str)
+	{
+		//return ( ! preg_match("/^[a-zñÑáéíóúÁÉÍÓÚ ]+$/i", $str)) ? FALSE : TRUE;
+
+       $validacion = FALSE;
+
+        if(preg_match("/^[a-zñÑáéíóúÁÉÍÓÚ ]+$/i", $str) || empty($str))
+        {
+            $validacion = TRUE;
+        }
+
+        return $validacion;
+
 	}
 
     public function establecerContenidoPrincipal($title, $contenido)
@@ -51,30 +72,12 @@ class Controlador_principal extends CI_Controller {
 	
 	public function formularioNuevoInterprete() 
 	{
-        $this->data['listaTiposInterprete'] = $this->mod_tipo_int->lista_tipos_interprete();
-
-        $this->data['listaGeneros'] = $this->mod_gen->lista_generos();
-
         $this->establecerContenidoPrincipal("Nuevo Intérprete", "formularioNuevoInterprete");
-	}
-
-	function alpha_space($str)
-	{
-		//return ( ! preg_match("/^[a-zñÑáéíóúÁÉÍÓÚ ]+$/i", $str)) ? FALSE : TRUE;
-
-       $validacion = FALSE;
-
-        if(preg_match("/^[a-zñÑáéíóúÁÉÍÓÚ ]+$/i", $str) || empty($str))
-        {
-            $validacion = TRUE;
-        }
-
-        return $validacion;
-
 	} 
 	
 	public function guardar_datos_interprete()
 	{
+		$this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
 		
 		$this->form_validation->set_rules('nomInt', 'nombre de intérprete', 'trim|required|max_length[50]|is_unique[interprete.nombre_interprete]');
 		$this->form_validation->set_rules('orgInt', 'origen de intérprete', 'trim|max_length[50]|callback_alpha_space');
@@ -154,54 +157,71 @@ class Controlador_principal extends CI_Controller {
 	
 	//Arreglar función
     public function guardar_datos_album()
-	{		
-		$nombreAlb = $this->input->post('nomAlb');
-		$InterpreteAlb = $this->input->post('intAlb');
-		$generoAlb = $this->input->post('genAlb');
-		$numeroPis = $this->input->post('numPis');
-		$anyoLan = $this->input->post('anLan');
-		$informacionAlb = $this->input->post('infAlb');
-		$imagenAlb = null;
+	{
+		$this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
 		
-		$config['upload_path'] = './assets/img/';
-		$config['allowed_types'] = 'gif|jpg|png';
-		$config['max_size']	= '2048';
-		$config['max_width']  = '1080';
-		$config['max_height']  = '1024';
-		$config['max_filename'] = '200';
+		$this->form_validation->set_rules('nomAlb', 'nombre de intérprete', 'trim|required|max_length[30]');
+		$this->form_validation->set_rules('intAlb', 'nombre de intérprete', 'trim|required|max_length[50]');
+		$this->form_validation->set_rules('numPis', 'origen de intérprete', 'trim|max_length[3]|numeric');
+		$this->form_validation->set_rules('anLan', 'origen de intérprete', 'trim|exact_length[4]|numeric');
 		
-		$this->load->library('upload', $config);
-		
-		if ($this->upload->do_upload('imgAlb'))
-        {
-			$datosImagenSubida  = $this->upload->data();			
-			$imagenAlb = $datosImagenSubida['file_name'];			
+        $this->form_validation->set_message('required', 'Debe introducir el campo %s');
+        $this->form_validation->set_message('max_length','El campo %s debe tener como máximo %s carácteres');
+        $this->form_validation->set_message('is_unique','Este %s ya existe');
+		$this->form_validation->set_message('alpha_space', 'El campo %s debe estar compuesto sólo por letras');
+	
+	
+		if(!$this->form_validation->run())
+		{
+			$this->formularioNuevoAlbum();
 		}
 		
-		/*else
+		else
 		{
-			$data['title'] = "Álbum no añadido";
-			$data['main_content'] = 'formularioNuevoAlbum';
-			$this->load->view('plantillas/template', $data);
-		}*/
-		
-		if ( !$this->mod_int->comprobar_existencia_interprete($InterpreteAlb))
-		{
-			$this->mod_int->insertar_solo_nombre_interprete($InterpreteAlb);
+			$nombreAlb = $this->input->post('nomAlb');
+			$InterpreteAlb = $this->input->post('intAlb');
+			$generoAlb = $this->input->post('genAlb');
+			$numeroPis = $this->input->post('numPis');
+			$anyoLan = $this->input->post('anLan');
+			$informacionAlb = $this->input->post('infAlb');
+			$imagenAlb = null;
+			
+			$config['upload_path'] = './assets/img/';
+			$config['allowed_types'] = 'gif|jpg|png';
+			$config['max_size']	= '2048';
+			$config['max_width']  = '1080';
+			$config['max_height']  = '1024';
+			$config['max_filename'] = '200';
+			
+			$this->load->library('upload', $config);
+			
+			if ($this->upload->do_upload('imgAlb'))
+			{
+				$datosImagenSubida  = $this->upload->data();			
+				$imagenAlb = $datosImagenSubida['file_name'];			
+			}
+			
+			/*else
+			{
+				$data['title'] = "Álbum no añadido";
+				$data['main_content'] = 'formularioNuevoAlbum';
+				$this->load->view('plantillas/template', $data);
+			}*/
+			
+			if ( !$this->mod_int->comprobar_existencia_interprete($InterpreteAlb))
+			{
+				$this->mod_int->insertar_solo_nombre_interprete($InterpreteAlb);
+			}
+			
+			$codigoInterprete = $this->mod_int->obtener_id_interprete($InterpreteAlb);
+			
+			$nombreUsuario = $this->session->userdata['nombreregistro'];
+			$codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
+			
+			$this->mod_alb->insertar_album($nombreAlb, $codigoInterprete, $generoAlb, $numeroPis, $anyoLan, $informacionAlb, $imagenAlb, $codigoUsuario);
+			
+			$this->index();
 		}
-		
-		$codigoInterprete = $this->mod_int->obtener_id_interprete($InterpreteAlb);
-		
-		$nombreUsuario = $this->session->userdata['nombreregistro'];
-		$codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
-		
-		$this->mod_alb->insertar_album($nombreAlb, $codigoInterprete, $generoAlb, $numeroPis, $anyoLan, $informacionAlb, $imagenAlb, $codigoUsuario);
-		
-		/*$data['title'] = 'Inicio';
-		$data['main_content'] = 'inicio';
-		$this->load->view('plantillas/template', $data);*/
-
-        $this->index();
 	}
 	
 	public function formularioLoguear() 

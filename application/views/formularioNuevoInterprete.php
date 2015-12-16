@@ -5,7 +5,7 @@
 
             <br>
 
-            <span class="help-block"><span class="glyphicon glyphicon-info-sign"></span> Campos obligatorios (*)</span>
+            <span class="help-block"><span class="glyphicon glyphicon-info-sign" style="color: #0080FF;" ></span> Campos obligatorios (*)</span>
 
             <br>
 
@@ -36,7 +36,7 @@
 
                 <div class="form-group">
                     <label class="control-label" for='genInt' >Género/s del intérprete: </label>
-                    <select name="genInt[]" id="genInt" multiple="multiple">
+                    <select class="selectGeneros" name="genInt[]" id="genInt" multiple="multiple">
 
                         <?php
 
@@ -80,7 +80,7 @@
 
                 <div class="form-group">
                     <label class="control-label" for='bioInt' >Biografía del interprete: </label><br>
-                    <textarea class="form-control" name="bioInt" id="bioInt" value='<?= set_value('bioInt');?>' ></textarea>
+                    <textarea class="form-control" rows="6" name="bioInt" id="bioInt" value='<?= set_value('bioInt');?>' ></textarea>
                     <?=form_error('bioInt'); ?>
                 </div>
 
