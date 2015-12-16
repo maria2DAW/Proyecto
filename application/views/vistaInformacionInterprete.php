@@ -1,11 +1,69 @@
-<br><br>
+<div class="container vistaInfo">
+    <div class="row">
+        <h4 class="pull-right" align="center" >
+            <a onclick="listaAlbumesInterprete(<?=$infoInterpretes->id_interprete;?>);" >ÁLBUMES PUBLICADOS</a>
+        </h4>
 
-Nombre de intérprete: <?= $infoInterpretes->nombre_interprete; ?><br>
-Tipo de intérprete: <?= $tipoInterprete; ?><br>
-Origen de intérprete: <?= $infoInterpretes->origen_interprete; ?><br>
-Biografía de intérprete: <?= $infoInterpretes->biografia_interprete; ?><br>
-Imágen de intérprete: <br> 
-	<img width="150" height="150" src="<?=base_url(); ?>assets/img/<?= $infoInterpretes->imagen_interprete; ?>" /><br>
-Publicado por usuario: <?= $usuarioInterprete; ?><br>
+        <div class="col-md-3">
+            <img class="img-responsive" src="<?=base_url(); ?>assets/img/interpretes/<?= $infoInterpretes->imagen_interprete; ?>"><br>
+            <h4 style="font-weight: bold; text-transform: uppercase;"><?= $infoInterpretes->nombre_interprete; ?></h4>
+            <h4><?= $tipoInterprete; ?></h4>
+        </div>
 
-<br><br>
+        <div id="divListaAlbumesInterprete" class="col-md-5 col-md-offset-4">
+        </div>
+
+    </div>
+
+    <div style="margin-top: 30px;" class="row">
+        <div class="col-md-5">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <td><strong>Género/s</strong></td>
+                        <td>
+                            <?php
+                                foreach($listaGenerosInterprete as $generoInt)
+                                {
+                                    echo $generoInt->nombre_genero.', ';
+                                }
+
+                            ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>Origen</strong></td>
+                        <td><?= $infoInterpretes->origen_interprete; ?></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>Biografía</strong></td>
+                        <td><?= $infoInterpretes->biografia_interprete; ?></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>Publicado por</strong></td>
+                        <td><?= $usuarioInterprete; ?></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>Fecha de publicación</strong></td>
+                        <td>
+                            <?php
+                                $date = date_create($infoInterpretes->publicacion_interprete);
+                                echo date_format($date, 'd-m-y');
+                            ?>
+
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>

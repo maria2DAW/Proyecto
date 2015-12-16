@@ -29,7 +29,7 @@
                 <?=form_error('titCan'); ?>
             </div>
 
-                <button style="display: none;"  type="button" id="bAddInfoCancion" class="btn btn-primary btn-xs pull-left">
+                <button type="button" id="bAddInfoCancion" class="btn btn-primary btn-xs pull-left">
                     <span class="glyphicon glyphicon-plus"></span> Añadir más información sobre ésta canción
                 </button>
                 <br><br>

@@ -1,19 +1,32 @@
-<br>
+<div class="container">
+    <div class="row centered">
 
-<head>Lista de Álbumes</head>
+        <h3 align="center" >Índice de Álbumes</h3>
 
-<br><br>
+        <br>
 
-<?php 
+        <ul id="listaLetCanLetra" class="pagination" >
+            <li><a onclick="cargarAlbumesPorSimbolo()" >#</a></li>
 
-foreach($listaAlbumes as $album)
-{ ?>
-	<ul>
-		<li><a href='#'><?=$album->nombre_album;?></a></li>
-	</ul>
-	
-<?php
-}
-?>
+            <?php
 
-<br><br>
+            foreach(range('A', 'Z') as $letter)
+            { ?>
+                <li><a <?php if($letter == 'N') { echo 'id="linkAlbLetraN"'; } ?> onclick="cargarAlbumPorLetra('<?=$letter;?>')" >
+                    <?=$letter;?>
+                </a></li>
+
+                <?php
+            }
+            ?>
+
+            <li><a onclick="cargarAlbumesPorNumero()">0-9</a></li>
+        </ul>
+
+        <br><br>
+
+        <div id="cargaListaAlbumes">
+
+        </div>
+    </div>
+</div>

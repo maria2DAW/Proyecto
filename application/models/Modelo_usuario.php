@@ -96,6 +96,28 @@ class Modelo_usuario extends CI_Model
 
         return $query->row();
     }
+
+    /**
+     * Comprueba si la contraseña del usuario coincide la que está registrada en su cuenta
+     *
+     * @param $usuarioIntroducido
+     * @param $password
+     */
+    public function comprobarPassUsuario($password, $usuario)
+    {
+        $passwordMd5 = md5($password);
+
+        $qSqlA = $this->db->query('SELECT * FROM usuario WHERE nombre_registro_usuario = "'.$usuario.'" AND password_usuario = "'.$passwordMd5.'";');
+        $row = $qSqlA->row();
+        return $row;
+    }
+
+    public function comprobarEmail($email)
+    {
+        $qSqlA = $this->db->query('SELECT * FROM usuario WHERE email_usuario = "'.$email.'";');
+        $row = $qSqlA->row();
+        return $row;
+    }
 	
 	public function cerrarSesion()
 	{
@@ -108,6 +130,13 @@ class Modelo_usuario extends CI_Model
 		$row = $qSqlA->row();
 		return $row->id_usuario;
 	}
+
+    public function obtener_id_usuario_por_email($emailUsuario)
+    {
+        $qSqlA = $this->db->query('SELECT id_usuario from usuario where email_usuario = "'.$emailUsuario.'";');
+        $row = $qSqlA->row();
+        return $row->id_usuario;
+    }
 	
 	public function obtener_nombre_usuario($idUsuario)
 	{
@@ -115,6 +144,13 @@ class Modelo_usuario extends CI_Model
 		$row = $qSqlA->row();
 		return $row->nombre_registro_usuario;
 	}
+
+    public function obtener_nombre_usuario_por_email($email)
+    {
+        $qSqlA = $this->db->query('SELECT nombre_registro_usuario from usuario where email_usuario = "'.$email.'";');
+        $row = $qSqlA->row();
+        return $row->nombre_registro_usuario;
+    }
 	
 	public function baja_usuario($idUsuario)
 	{

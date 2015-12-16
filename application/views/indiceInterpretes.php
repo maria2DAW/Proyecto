@@ -4,14 +4,14 @@
 
         <br>
 
-        <ul class="pagination" >
+        <ul id="listaIntLetra" class="pagination" >
             <li><a onclick="cargarSimbolos()" >#</a></li>
 
             <?php
 
             foreach(range('A', 'Z') as $letter)
             { ?>
-                <li><a onclick="cargarLetra('<?=$letter;?>')" >
+                <li><a <?php if($letter == 'N') { echo 'id="linkIntLetraN"'; } ?> onclick="cargarLetra('<?=$letter;?>')" >
                 <?=$letter;?>
                 </a></li>
 

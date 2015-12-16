@@ -1,8 +1,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-2 pull-right">
-            <a class="btn btn-rosado btn-block" href='<?=base_url(); ?>
-                index.php/Controlador_principal/cerrarSesion'>Cerrar sesión
+            <a class="btn btn-rosado btn-block" href='<?=base_url(); ?>index.php/Controlador_principal/cerrarSesion'>
+                Cerrar sesión
                 <span class="glyphicon glyphicon-remove pull-right"></span>
             </a>
         </div>

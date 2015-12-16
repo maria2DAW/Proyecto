@@ -1,5 +1,12 @@
 <div class="container">
-    <div class="row">
+    <div class="row" id="formularioLogin" name="formularioLogin">
+
+        <!--<div class="alert alert-success">
+            <span class="glyphicon glyphicon-info-sign"></span>
+            <strong>Su contraseña ha sido modificada.</strong>
+            <br>Puedes iniciar sesión en tu cuenta con la contraseña proporcionada.
+        </div>-->
+
         <div class="col-md-4 col-md-offset-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -21,16 +28,23 @@
                             <input class="form-control" type='password' name='passUsu' id='passUsu' />
                             <?php if(validation_errors()) echo '<span class="glyphicon glyphicon-remove form-control-feedback"></span>'; ?>
                             <?=form_error('passUsu')?>
+
+                            <div>
+                                <small>
+                                    <a  style="color: #3498db; " href="<?=base_url(); ?>index.php/Controlador_principal/formularioRestaurarPass">
+                                        ¿Has olvidado tu contraseña?
+                                    </a>
+                                </small>
+                            </div>
                         </div>
 
-                        <input class="btn btn-rosado btn-block" type='submit' value='Login' ><br><br>
+                        <input class="btn btn-rosado btn-block" type='submit' value='Login' >
                     </form>
 
-                    <div>
+                    <div style="margin-top: 20px;">
                         <a href="<?=base_url(); ?>index.php/Controlador_principal/formularioRegistro">Regístrate aquí</a>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

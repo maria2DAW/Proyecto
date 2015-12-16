@@ -29,6 +29,18 @@ class Modelo_cancion extends CI_Model
     	$eSqlA = $this->db->query($qSqlA);
     	return $eSqlA->row();
     }
+
+    public function lista_canciones_album($idAlbum)
+    {
+        $qSqlA = 'SELECT * ';
+        $qSqlA .= 'FROM cancion c, album a ';
+        $qSqlA .= 'WHERE c.album_cancion = a.id_album ';
+        $qSqlA .= 'AND c.album_cancion = '.$idAlbum;
+        $qSqlA .= ' ORDER BY c.nombre_cancion';
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
 	
 	public function insertar_cancion($nombreCan, $albumCan, $duracionCan, $compositorCan, $comentarioCan, $enlaceYou, $usuarioCan)
 	{
@@ -96,5 +108,71 @@ class Modelo_cancion extends CI_Model
     {
         $qSqlA = $this->db->query('SELECT * FROM cancion c, album a WHERE c.id_cancion = '.$idCancion.' AND c.album_cancion = a.id_album');
         return $qSqlA->row();
+    }
+
+    public function obtener_canciones_por_genero($idGenero)
+    {
+        $qSqlA = "SELECT * ";
+        $qSqlA .= "FROM cancion c, genero g, genero_cancion x ";
+        $qSqlA .= "WHERE x.genero_cancion = ".$idGenero;
+        $qSqlA .= " AND x.genero_cancion = g.id_genero ";
+        $qSqlA .= "AND x.id_cancion_genero = c.id_cancion ";
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
+
+    public function obtener_canciones_sin_genero()
+    {
+        $qSqlA = 'SELECT * ';
+        $qSqlA .= 'FROM cancion T1 ';
+        $qSqlA .= 'LEFT OUTER JOIN genero_cancion T2 ';
+        $qSqlA .= 'ON T1.id_cancion = T2.id_cancion_genero ';
+        $qSqlA .= 'WHERE T2.id_cancion_genero IS NULL';
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
+
+    public function lista_canciones_empiezan_por_letra($letra)
+    {
+        $qSqlA = 'SELECT * ';
+        $qSqlA .= 'FROM letra_cancion l, cancion c, album a, interprete i ';
+        $qSqlA .= 'WHERE l.cancion_letra = c.id_cancion ';
+        $qSqlA .= 'AND c.album_cancion = a.id_album ';
+        $qSqlA .= 'AND a.interprete_album = i.id_interprete ';
+        $qSqlA .= 'AND c.nombre_cancion LIKE "'.$letra.'%" ';
+        $qSqlA .= 'ORDER BY c.nombre_cancion';
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
+
+    public function lista_canciones_empiezan_por_numero()
+    {
+        $qSqlA = 'SELECT * ';
+        $qSqlA .= 'FROM letra_cancion l, cancion c, album a, interprete i ';
+        $qSqlA .= 'WHERE l.cancion_letra = c.id_cancion ';
+        $qSqlA .= 'AND c.album_cancion = a.id_album ';
+        $qSqlA .= 'AND a.interprete_album = i.id_interprete ';
+        $qSqlA .= 'AND c.nombre_cancion REGEXP "^[0-9]" ';
+        $qSqlA .= 'ORDER BY c.nombre_cancion';
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
+
+    public function lista_canciones_empiezan_por_otro_caracter()
+    {
+        $qSqlA = 'SELECT * ';
+        $qSqlA .= 'FROM letra_cancion l, cancion c, album a, interprete i ';
+        $qSqlA .= 'WHERE l.cancion_letra = c.id_cancion ';
+        $qSqlA .= 'AND c.album_cancion = a.id_album ';
+        $qSqlA .= 'AND a.interprete_album = i.id_interprete ';
+        $qSqlA .= 'AND c.nombre_cancion REGEXP "^[^[:alnum:]]" ';
+        $qSqlA .= 'ORDER BY c.nombre_cancion';
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
     }
 }

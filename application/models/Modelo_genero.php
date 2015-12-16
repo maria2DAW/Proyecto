@@ -74,6 +74,7 @@ class Modelo_genero extends CI_Model
     }
 
 	//Géneros Álbum
+
 	public function insertar_genero_album($idAlbum, $idGenero)
 	{
 		$campos = array(
@@ -86,7 +87,7 @@ class Modelo_genero extends CI_Model
 	
 	public function lista_generos_album($idAlbum)
     {
-    	$qSqlA = 'SELECT nombre_genero FROM genero_album a, genero g WHERE i.id_album_genero = '.$idAlbum.' AND a.genero_album = g.id_genero';
+    	$qSqlA = 'SELECT nombre_genero FROM genero_album a, genero g WHERE a.id_album_genero = '.$idAlbum.' AND a.genero_album = g.id_genero';
     	$eSqlA = $this->db->query($qSqlA);
     	return $eSqlA->result();
     }

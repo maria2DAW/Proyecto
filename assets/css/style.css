@@ -1,37 +1,11 @@
-*{
-	/*margin: 0 auto;*/
-}
+/*[class^="flaticon-"]:before, [class*=" flaticon-"]:before, [class^="flaticon-"]:after, [class*=" flaticon-"]:after {
+    font-size: 80px;
+    margin-left: 0px;
+    color: #333;
+}*/
 
-nav{
-	background-color: #000;
-	padding: 10px 0;
-	text-align: center;
+.flaticonCategorias:before{
+    font-size: 80px;
+    margin-left: 0px;
+    color: #333;
 }
-
-nav ul li{
-	display: inline-block;
-	font-size: 16px;
-	padding: 0 25px;
-	text-transform: uppercase;
-}
-
-nav ul li a{
-	color: white;
-	text-decoration: none;
-}
-
-footer{
-	background-color: #333;
-	color: white;
-	font-size: 16px;
-	padding: 30px 0;
-	text-align: center;
-}
-
-.listaGenerosInt{
-    height: 200px;
-    width: 300px;
-    overflow: auto;
-    border: 1px solid #000000;
-}
-

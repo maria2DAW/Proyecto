@@ -66,7 +66,7 @@ class Controlador_principal extends CI_Controller {
         $this->data['intConMasLetras'] = $this->mod_int->interpretes_con_mas_letras($this->data['numTop']);
         // -- Ranquins --
 
-		$this->establecerContenidoPrincipal("Inicio", "inicio");
+		$this->establecerContenidoPrincipal("Canticum", "inicio");
 	}
 
     function alpha_space($str)
@@ -273,6 +273,32 @@ class Controlador_principal extends CI_Controller {
 
         $this->establecerContenidoPrincipal('Índice de letras', 'indiceAlbumes');
     }
+
+    public function albumes_por_indice_letra($letra)
+    {
+        $this->data['listaAlbumesPorLetra'] = $this->mod_alb->lista_albumes_empiezan_por_letra($letra);
+        $this->data['numAlbumesPorLetra'] = count($this->data['listaAlbumesPorLetra']);
+
+        $this->data['letra'] = $letra;
+
+        $this->load->view('vistaAlbumesPorIndiceLetra',$this->data);
+    }
+
+    public function albumes_por_indice_simbolo()
+    {
+        $this->data['listaAlbumesPorSimbolo'] = $this->mod_alb->lista_albumes_empiezan_por_otro_caracter();
+        $this->data['numAlbumesPorSimbolo'] = count($this->data['listaAlbumesPorSimbolo']);
+
+        $this->load->view('vistaAlbumesPorIndiceSimbolo',$this->data);
+    }
+
+    public function albumes_por_indice_numero()
+    {
+        $this->data['listaAlbumesPorNumero'] = $this->mod_can->lista_canciones_empiezan_por_numero();
+        $this->data['numAlbumesPorNumero'] = count($this->data['listaAlbumesPorNumero']);
+
+        $this->load->view('vistaAlbumesPorIndiceNumero',$this->data);
+    }
 	
 	public function formularioLoguear() 
 	{
@@ -282,11 +308,13 @@ class Controlador_principal extends CI_Controller {
 	public function logear()
 	{
         $pass = $this->input->post('passUsu');
+        $passMd5 = md5($pass);
+
         $nomUsuario = $this->input->post('nomUsu');
 
         $this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
 
-		$this->form_validation->set_rules('nomUsu', 'nombre de usuario', 'required|callback_validarUsuarioYPassword['.$pass.']');
+		$this->form_validation->set_rules('nomUsu', 'nombre de usuario', 'required|callback_validarUsuarioYPassword['.$passMd5.']');
 		$this->form_validation->set_rules('passUsu', 'contraseña', 'required');
 
 		$this->form_validation->set_message('validarUsuarioYPassword', 'Nombre de usuario o contraseña incorrecto');
@@ -317,6 +345,137 @@ class Controlador_principal extends CI_Controller {
             $this->index();
 		}
 	}
+
+    public function formularioRestaurarPass()
+    {
+        $this->establecerContenidoPrincipal('Restaurar Contraseña', 'formPassOlvidada');
+    }
+
+    public function restaurarPass()
+    {
+        $email = $this->input->post('emailCuenta');
+
+        $this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
+
+        $this->form_validation->set_rules('emailCuenta', 'e-mail', 'required|trim|valid_email|callback_comprobarSiExisteEmailCuenta');
+
+        $this->form_validation->set_message('comprobarSiExisteEmailCuenta', 'Este email no está registrado');
+
+        if($this->form_validation->run() == false)
+        {
+            $this->formularioRestaurarPass();
+        }
+
+        else
+        {
+            $nombreUsuario = $this->mod_usu->obtener_nombre_usuario_por_email($email);
+
+            $randomPass = $this->generadorPass();
+            $randomPassMd5 = md5($randomPass);
+
+            $idUsuario = $this->mod_usu->obtener_id_usuario_por_email($email);
+
+            $this->mod_usu->cambiar_contrasenya($idUsuario, $randomPassMd5);
+
+            $this->enviarPassEmail($nombreUsuario, $email, $randomPass);
+            $this->formularioLoguear();
+        }
+    }
+
+    public function enviarPassEmail($usuario, $email, $nuevaPass)
+    {
+        // Utilizando smtp
+        $config['protocol'] = 'smtp';
+        $config['smtp_host'] = 'mail.iessansebastian.com';
+        $config['smtp_user'] = 'aula4@iessansebastian.com';
+        $config['smtp_pass'] = 'daw2alumno';
+        $config['mailtype'] = 'html';
+
+
+        $this->email->initialize($config);
+
+        $this->email->from('aula4@iessansebastian.com', 'Canticum');
+        $this->email->to($email);
+        $this->email->subject('Solicitud para restaurar contraseña');
+        $this->email->message("<html><body><h2>Esta contraseña es aleatoria.<br>Puede modificarla accediendo a su perfil de usuario si así lo desea.</h2><p>Usuario: <font color='blue'>" . $usuario .
+            "</font></p><p>Nuevo password--> <font color='blue'>$nuevaPass</font></p></body></html>");
+
+        return $this->email->send();
+
+    }
+
+    /**
+     * @return string Contraseña aleatoria
+     *
+     * @obtenido_de: http://www.cristalab.com/tutoriales/generar-password-aleatorio-en-php-en-1-linea-de-codigo-c46930l/
+     */
+    public function generadorPass()
+    {
+        $psswd = substr( md5(microtime()), 1, 12);
+        return $psswd;
+    }
+
+    public function comprobarSiExisteEmailCuenta($emailCuenta)
+    {
+        if($this->mod_usu->comprobarEmail($emailCuenta))
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+
+    public function formularioCambiarPass()
+    {
+        $this->establecerContenidoPrincipal('Restaurar Contraseña', 'formCambiarPass');
+    }
+
+    public function guardar_datos_nueva_pass()
+    {
+        $nombreUsuario = $this->session->userdata['nombreregistro'];
+
+        $this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
+
+        $this->form_validation->set_rules('conActual', 'contraseña actual', 'required|callback_comprobarPassUsuario['.$nombreUsuario.']');
+        $this->form_validation->set_rules('conNueva', 'nueva contraseña', 'required|exact_length[12]|matches[conNueva2]|md5');
+        $this->form_validation->set_rules('conNueva2', 'repita la nueva contraseña', 'required|exact_length[12]|md5');
+
+        $this->form_validation->set_message('comprobarPassUsuario', 'Esta no es su contraseña actual');
+
+        if($this->form_validation->run() == false)
+        {
+            $this->formularioCambiarPass();
+        }
+
+        else
+        {
+            $idUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
+
+            $nuevaPass = $this->input->post('conNueva');
+
+            $this->mod_usu->cambiar_contrasenya($idUsuario, $nuevaPass);
+
+            $this->accesoUsuarios();
+        }
+
+    }
+
+    public function comprobarPassUsuario($pass, $usuario)
+    {
+        if($this->mod_usu->comprobarPassUsuario($pass, $usuario))
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+
 
     public function accesoUsuarios()
     {
@@ -352,7 +511,6 @@ class Controlador_principal extends CI_Controller {
 
         if($loginValido)
         {
-			//echo $loginValido[0]['nombre_usuario'];			
             return true;
         }
 
@@ -395,8 +553,8 @@ class Controlador_principal extends CI_Controller {
         $this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
 
 		$this->form_validation->set_rules('nombreUsuario', 'nombre de usuario', 'required|min_length[5]|max_length[20]|trim|is_unique[usuario.nombre_registro_usuario]');
-		$this->form_validation->set_rules('passUsuario', 'contraseña', 'required|exact_length[12]|trim|matches[pass2Usuario]|md5');
-        $this->form_validation->set_rules('pass2Usuario', 'repetir contraseña', 'required|trim|md5');
+		$this->form_validation->set_rules('passUsuario', 'contraseña', 'required|exact_length[12]|matches[pass2Usuario]|md5');
+        $this->form_validation->set_rules('pass2Usuario', 'repetir contraseña', 'required|exact_length[12]|md5');
         $this->form_validation->set_rules('nombre', 'nombre', 'required|trim|callback_alpha_space');
         $this->form_validation->set_rules('apellidos', 'apellidos', 'required|trim|callback_alpha_space');
         $this->form_validation->set_rules('email', 'e-mail', 'required|valid_email|trim|is_unique[usuario.email_usuario]');
@@ -415,6 +573,7 @@ class Controlador_principal extends CI_Controller {
 			$nombreUsu = $this->input->post('nombreUsuario');
 			$email = $this->input->post('email');
 			$pass = $this->input->post('passUsuario');
+
 			$nombre = $this->input->post('nombre');
 			$apellidos = $this->input->post('apellidos');
 			$pais = $this->input->post('pais');
@@ -446,47 +605,10 @@ class Controlador_principal extends CI_Controller {
 	
 	public function interpretes_por_indice_letra($letra)
 	{
-        $this->data['numInterpretesLetra'] = count($this->mod_int->lista_interpretes_empiezan_por_letra($letra));
+        $this->data['listaInterpretesPorLetra'] = $this->mod_int->lista_interpretes_empiezan_por_letra($letra);
+        $this->data['numInterpretesLetra'] = count($this->data['listaInterpretesPorLetra']);
 
-        $pages = 10; //Número de registros mostrados por páginas
-
-        $desde = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
-
-        $config['uri_segment'] = 4;
-        $config['base_url'] = base_url() . 'index.php/Controlador_principal/indice_interpretes/pagina/'; // parametro base de la aplicación, si tenemos un .htaccess nos evitamos el index.php
-        $config['total_rows'] = $this->data['numInterpretesLetra'];
-        $config['per_page'] = $pages;
-        $config['num_links'] = 10; //Número de links mostrados en la paginación
-        /*$config['first_link'] = '<<';
-        $config['last_link'] = '>>';
-        $config['next_link'] = '>';
-        $config['prev_link'] = '<';*/
-
-        $config['full_tag_open'] = '<ul class="pagination pagination-sm">';
-        $config['full_tag_close'] = '</ul>';
-        $config['num_tag_open'] = '<li>';
-        $config['num_tag_close'] = '</li>';
-        $config['cur_tag_open'] = '<li class="active"><span>';
-        $config['cur_tag_close'] = '</span></li>';
-        $config['prev_tag_open'] = '<li>';
-        $config['prev_tag_close'] = '</li>';
-        $config['next_tag_open'] = '<li>';
-        $config['next_tag_close'] = '</li>';
-        $config['first_link'] = '«';
-        $config['prev_link'] = '‹';
-        $config['last_link'] = '»';
-        $config['next_link'] = '›';
-        $config['first_tag_open'] = '<li>';
-        $config['first_tag_close'] = '</li>';
-        $config['last_tag_open'] = '<li>';
-        $config['last_tag_close'] = '</li>';
-
-        $this->pagination->initialize($config);
-
-        $this->data['listaInterpretesPorLetra'] = $this->mod_int->lista_interpretes_letra_paginado($desde, $config['per_page'], $letra);
         $this->data['letra'] = $letra;
-
-        $this->data['paginacion'] = $this->pagination->create_links();
 		
 		$this->load->view('vistaInterpretesPorIndiceLetra',$this->data);
 	}
@@ -495,6 +617,8 @@ class Controlador_principal extends CI_Controller {
 	{
         $this->data['infoInterpretes'] = $this->mod_int->obtener_interprete_por_id($idInterprete);
         $this->data['tipoInterprete'] = $this->mod_tipo_int->obtener_nombre_tipo_interprete($this->data['infoInterpretes']->tipo_interprete);
+        $this->data['listaGenerosInterprete'] = $this->mod_gen->lista_generos_interprete($idInterprete);
+
         $this->data['usuarioInterprete'] = $this->mod_usu->obtener_nombre_usuario($this->data['infoInterpretes']->usuario_interprete);
 		
 		//$camposInt = $this->mod_int->obtener_campos_interprete();
@@ -503,6 +627,36 @@ class Controlador_principal extends CI_Controller {
 
         $this->establecerContenidoPrincipal($title, 'vistaInformacionInterprete');
 	}
+
+    public function lista_albumes_interprete($idInt)
+    {
+        $this->data['listaAlbumesInt'] = $this->mod_alb->lista_albumes_interprete($idInt);
+        $this->data['numAlbumesInt'] = count($this->data['listaAlbumesInt']);
+
+        $this->load->view('listaAlbumesInterprete',$this->data);
+    }
+
+    public function vista_info_albumes($idAlbum)
+    {
+        $this->data['infoAlbumes'] = $this->mod_alb->obtener_album_por_id($idAlbum);
+        $this->data['listaGenerosAlbum'] = $this->mod_gen->lista_generos_album($idAlbum);
+
+        $this->data['interpreteAlbum'] = $this->mod_alb->obtener_interprete_album($this->data['infoAlbumes']->id_album);
+
+        $this->data['usuarioAlbum'] = $this->mod_usu->obtener_nombre_usuario($this->data['infoAlbumes']->usuario_album);
+
+        $title =  "Información de ".$this->data['infoAlbumes']->nombre_album;
+
+        $this->establecerContenidoPrincipal($title, 'vistaInformacionAlbum');
+    }
+
+    public function lista_canciones_album($idAlb)
+    {
+        $this->data['listaCancionesAlb'] = $this->mod_can->lista_canciones_album($idAlb);
+        $this->data['numCancionesAlb'] = count($this->data['listaCancionesAlb']);
+
+        $this->load->view('listaCancionesAlbum',$this->data);
+    }
 	
 	public function vista_anyadir_letra()
 	{
@@ -631,10 +785,34 @@ class Controlador_principal extends CI_Controller {
 	
 	public function indice_letras()
 	{
-		$this->data['listaCanciones'] = $this->mod_can->lista_canciones();
-
-        $this->establecerContenidoPrincipal('Índice de letras', 'indiceLetras');
+        $this->establecerContenidoPrincipal('Índice de Letras', 'indiceLetras');
 	}
+
+    public function letras_por_indice_letra($letra)
+    {
+        $this->data['listaCancionesPorLetra'] = $this->mod_can->lista_canciones_empiezan_por_letra($letra);
+        $this->data['numCancionesPorLetra'] = count($this->data['listaCancionesPorLetra']);
+
+        $this->data['letra'] = $letra;
+
+        $this->load->view('vistaLetrasPorIndiceLetra',$this->data);
+    }
+
+    public function letras_por_indice_simbolo()
+    {
+        $this->data['listaLetrasPorSimbolo'] = $this->mod_can->lista_canciones_empiezan_por_otro_caracter();
+        $this->data['numCancionesPorSimbolo'] = count($this->data['listaLetrasPorSimbolo']);
+
+        $this->load->view('vistaLetrasPorIndiceSimbolo',$this->data);
+    }
+
+    public function letras_por_indice_numero()
+    {
+        $this->data['listaLetrasPorNumero'] = $this->mod_can->lista_canciones_empiezan_por_numero();
+        $this->data['numCancionesPorNumero'] = count($this->data['listaLetrasPorNumero']);
+
+        $this->load->view('vistaLetrasPorIndiceNumero',$this->data);
+    }
 
 	public function mostrar_letra($idCancion)
 	{
@@ -995,5 +1173,32 @@ class Controlador_principal extends CI_Controller {
             $this->establecerContenidoPrincipal('Resultados de la búsqueda', 'resultadosBusqueda');
         }
 
+    }
+
+    public function categoriasLetra()
+    {
+        $this->data['listaGeneros'] = $this->mod_gen->lista_generos();
+
+        $this->establecerContenidoPrincipal('Categorías de Letras', 'categoriasLetra');
+    }
+
+    public function categoriaSeleccionadaLetra($idGenero)
+    {
+        $this->data['nombreGenero'] = $this->mod_gen->obtener_genero($idGenero)->nombre_genero;
+
+        $this->data['LetrasGeneroSeleccionado'] = $this->mod_can->obtener_canciones_por_genero($idGenero);
+
+        $this->data['numResultados'] = count($this->data['LetrasGeneroSeleccionado']);
+
+        $this->establecerContenidoPrincipal('Letras de '.$this->data['nombreGenero'], 'listaCancionesPorGenero');
+    }
+
+    public function categoriaSinGeneroLetra()
+    {
+        $this->data['LetrasSinGenero'] = $this->mod_can->obtener_canciones_sin_genero();
+
+        $this->data['numResultados'] = count($this->data['LetrasSinGenero']);
+
+        $this->establecerContenidoPrincipal('Letras sin género ', 'listaCancionesSinGenero');
     }
 }	

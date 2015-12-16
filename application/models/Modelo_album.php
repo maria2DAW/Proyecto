@@ -23,6 +23,18 @@ class Modelo_album extends CI_Model
         return $eSqlA->result();
     }
 
+    public function lista_albumes_interprete($idInterprete)
+    {
+        $qSqlA = "SELECT * ";
+        $qSqlA.= "FROM album a, interprete i ";
+        $qSqlA.= "WHERE a.interprete_album = i.id_interprete ";
+        $qSqlA.= "AND a.interprete_album = ".$idInterprete;
+        $qSqlA.= " ORDER BY a.nombre_album";
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
+
 	public function insertar_album($nombreAlb, $interpreteAlb, $numPistas, $anyoAlb, $informacionAlb, $imagenAlb, $usuarioAlb)
 	{
 		$campos = array(
@@ -65,6 +77,23 @@ class Modelo_album extends CI_Model
 		
 		return $existe;
 	}
+
+    public function obtener_album_por_id($idAlbum)
+    {
+        $qSqlA = 'SELECT * from album WHERE id_album = '.$idAlbum;
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->row();
+    }
+
+    public function obtener_interprete_album($idAlbum)
+    {
+        $qSqlA = 'SELECT * ';
+        $qSqlA .= 'FROM album a, interprete i ';
+        $qSqlA .= 'WHERE a.interprete_album = i.id_interprete ';
+        $qSqlA .= 'AND a.id_album = '.$idAlbum;
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->row();
+    }
 	
 	public function obtener_id_album($interpreteAlbum, $nombreAlbum)
 	{
@@ -78,4 +107,40 @@ class Modelo_album extends CI_Model
 		$insert_id = $this->db->insert_id();
 		return  $insert_id;
 	}
+
+    public function lista_albumes_empiezan_por_letra($letra)
+    {
+        $qSqlA = 'SELECT * ';
+        $qSqlA .= 'FROM album a, interprete i ';
+        $qSqlA .= 'WHERE a.interprete_album = i.id_interprete ';
+        $qSqlA .= 'AND a.nombre_album LIKE "'.$letra.'%" ';
+        $qSqlA .= 'ORDER BY a.nombre_album';
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
+
+    public function lista_albumes_empiezan_por_numero()
+    {
+        $qSqlA = 'SELECT * ';
+        $qSqlA .= 'FROM album a, interprete i ';
+        $qSqlA .= 'WHERE a.interprete_album = i.id_interprete ';
+        $qSqlA .= 'AND a.nombre_album REGEXP "^[0-9]" ';
+        $qSqlA .= 'ORDER BY a.nombre_album';
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
+
+    public function lista_albumes_empiezan_por_otro_caracter()
+    {
+        $qSqlA = 'SELECT * ';
+        $qSqlA .= 'FROM album a, interprete i ';
+        $qSqlA .= 'WHERE a.interprete_album = i.id_interprete ';
+        $qSqlA .= 'AND a.nombre_album REGEXP "^[^[:alnum:]]" ';
+        $qSqlA .= 'ORDER BY a.nombre_album';
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
 }	

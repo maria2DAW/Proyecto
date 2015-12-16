@@ -1,4 +1,9 @@
 <div class="panel panel-default">
+
+    <div class="row centered">
+        <a href='<?=base_url(); ?>index.php/Controlador_principal/formularioCambiarPass' class="btn btn-info btn-sm" >Cambiar contraseña</a>
+    </div>
+
     <p>Nick: <?=$usuarioConectado->nombre_registro_usuario?></p>
     <p>E-mail: <?=$usuarioConectado->email_usuario?></p>
     <p>Contraseña: <?=$usuarioConectado->password_usuario?></p>

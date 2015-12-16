@@ -1,19 +1,34 @@
-<br>
+<div class="container">
+    <div class="row centered">
 
-<head>Lista de letras</head>
+        <a href='<?=base_url(); ?>index.php/Controlador_principal/categoriasLetra' class="btn btn-info btn-sm" >Categorías</a><br>
 
-<br><br>
+        <h3 align="center" >Índice de letras</h3>
 
-<?php 
+        <br>
 
-foreach($listaCanciones as $cancion)
-{ ?>
-	<ul>
-		<li><a href='<?=base_url(); ?>index.php/Controlador_principal/mostrar_letra/<?=$cancion->id_cancion;?>'><?=$cancion->nombre_cancion;?></a></li>
-	</ul>
-	
-<?php
-}
-?>
+        <ul id="listaLetCanLetra" class="pagination" >
+            <li><a onclick="cargarCancionesPorSimbolo()" >#</a></li>
 
-<br><br>
+            <?php
+
+            foreach(range('A', 'Z') as $letter)
+            { ?>
+                <li><a <?php if($letter == 'N') { echo 'id="linkCanLetraN"'; } ?> onclick="cargarCancionPorLetra('<?=$letter;?>')" >
+                    <?=$letter;?>
+                </a></li>
+
+                <?php
+            }
+            ?>
+
+            <li><a onclick="cargarCancionesPorNumero()">0-9</a></li>
+        </ul>
+
+        <br><br>
+
+        <div id="cargaListaLetras">
+
+        </div>
+    </div>
+</div>

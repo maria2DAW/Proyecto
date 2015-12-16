@@ -20,6 +20,7 @@ function cargarLetra(letra)
         });
 }
 
+
 function cargarNumeros()
 {
     xhr = $.ajax({
@@ -53,6 +54,112 @@ function cargarSimbolos()
 function cargarLista()
 {
     $("#cargaListaInterpretes").html(xhr.responseText);
+}
+
+function cargarCancionPorLetra(letra)
+{
+    //Conexión con ajax
+    xhr = $.ajax({
+        url: baseUrl + 'index.php/Controlador_principal/letras_por_indice_letra/' + letra,
+        type: 'GET', //Lo mandamos por el método GET.
+        async: true, //True para permitir el uso de ajax.
+        success: cargarListaCanciones, //Función a la que se llama cada vez que actúa ajax.
+        timeout:4000  // Tiempo máximo de espera para ajax 4 segundos.
+
+    }).fail(function()  //Después de 4 segundos ajax dará un error.
+        {
+            alert( "Tiempo de espera excedido" );
+        });
+}
+
+function cargarCancionesPorSimbolo()
+{
+    //Conexión con ajax
+    xhr = $.ajax({
+        url: baseUrl + 'index.php/Controlador_principal/letras_por_indice_simbolo/',
+        type: 'GET', //Lo mandamos por el método GET.
+        async: true, //True para permitir el uso de ajax.
+        success: cargarListaCanciones, //Función a la que se llama cada vez que actúa ajax.
+        timeout:4000  // Tiempo máximo de espera para ajax 4 segundos.
+
+    }).fail(function()  //Después de 4 segundos ajax dará un error.
+        {
+            alert( "Tiempo de espera excedido" );
+        });
+}
+
+function cargarCancionesPorNumero()
+{
+    //Conexión con ajax
+    xhr = $.ajax({
+        url: baseUrl + 'index.php/Controlador_principal/letras_por_indice_numero/',
+        type: 'GET', //Lo mandamos por el método GET.
+        async: true, //True para permitir el uso de ajax.
+        success: cargarListaCanciones, //Función a la que se llama cada vez que actúa ajax.
+        timeout:4000  // Tiempo máximo de espera para ajax 4 segundos.
+
+    }).fail(function()  //Después de 4 segundos ajax dará un error.
+        {
+            alert( "Tiempo de espera excedido" );
+        });
+}
+
+function cargarListaCanciones()
+{
+    $("#cargaListaLetras").html(xhr.responseText);
+}
+
+function cargarAlbumPorLetra(letra)
+{
+    //Conexión con ajax
+    xhr = $.ajax({
+        url: baseUrl + 'index.php/Controlador_principal/albumes_por_indice_letra/' + letra,
+        type: 'GET', //Lo mandamos por el método GET.
+        async: true, //True para permitir el uso de ajax.
+        success: cargarListaAlbumes, //Función a la que se llama cada vez que actúa ajax.
+        timeout:4000  // Tiempo máximo de espera para ajax 4 segundos.
+
+    }).fail(function()  //Después de 4 segundos ajax dará un error.
+        {
+            alert( "Tiempo de espera excedido" );
+        });
+}
+
+function cargarAlbumesPorSimbolo()
+{
+    //Conexión con ajax
+    xhr = $.ajax({
+        url: baseUrl + 'index.php/Controlador_principal/albumes_por_indice_simbolo/',
+        type: 'GET', //Lo mandamos por el método GET.
+        async: true, //True para permitir el uso de ajax.
+        success: cargarListaAlbumes, //Función a la que se llama cada vez que actúa ajax.
+        timeout:4000  // Tiempo máximo de espera para ajax 4 segundos.
+
+    }).fail(function()  //Después de 4 segundos ajax dará un error.
+        {
+            alert( "Tiempo de espera excedido" );
+        });
+}
+
+function cargarAlbumesPorNumero()
+{
+    //Conexión con ajax
+    xhr = $.ajax({
+        url: baseUrl + 'index.php/Controlador_principal/albumes_por_indice_numero/',
+        type: 'GET', //Lo mandamos por el método GET.
+        async: true, //True para permitir el uso de ajax.
+        success: cargarListaAlbumes, //Función a la que se llama cada vez que actúa ajax.
+        timeout:4000  // Tiempo máximo de espera para ajax 4 segundos.
+
+    }).fail(function()  //Después de 4 segundos ajax dará un error.
+        {
+            alert( "Tiempo de espera excedido" );
+        });
+}
+
+function cargarListaAlbumes()
+{
+    $("#cargaListaAlbumes").html(xhr.responseText);
 }
 
 //Usuarios
@@ -184,6 +291,48 @@ function cargarNuevasPublicaciones()
     $("#cargarNuevasPublicaciones").html(xhr.responseText);
 }
 
+function listaAlbumesInterprete(idInt)
+{
+    //Conexión con ajax
+    xhr = $.ajax({
+        url: baseUrl + 'index.php/Controlador_principal/lista_albumes_interprete/' + idInt,
+        type: 'GET', //Lo mandamos por el método GET.
+        async: true, //True para permitir el uso de ajax.
+        success: cargarListaAlbumesInt, //Función a la que se llama cada vez que actúa ajax.
+        timeout:4000  // Tiempo máximo de espera para ajax 4 segundos.
+
+    }).fail(function()  //Después de 4 segundos ajax dará un error.
+        {
+            alert( "Tiempo de espera excedido" );
+        });
+}
+
+function cargarListaAlbumesInt()
+{
+    $("#divListaAlbumesInterprete").html(xhr.responseText);
+}
+
+function listaCancionesAlbum(idAlb)
+{
+    //Conexión con ajax
+    xhr = $.ajax({
+        url: baseUrl + 'index.php/Controlador_principal/lista_canciones_album/' + idAlb,
+        type: 'GET', //Lo mandamos por el método GET.
+        async: true, //True para permitir el uso de ajax.
+        success: cargarListaCancionesAlb, //Función a la que se llama cada vez que actúa ajax.
+        timeout:4000  // Tiempo máximo de espera para ajax 4 segundos.
+
+    }).fail(function()  //Después de 4 segundos ajax dará un error.
+        {
+            alert( "Tiempo de espera excedido" );
+        });
+}
+
+function cargarListaCancionesAlb()
+{
+    $("#divListaCancionesAlbum").html(xhr.responseText);
+}
+
 
 /*********************************************************************
 FIN AJAX
@@ -273,7 +422,7 @@ $('#bAddInfoCancion').click(function () {
             id: "durCan"
         })
 
-    ).appendTo('#formNuevaLetra');
+    ).insertAfter($('#grupoTitCan'));
 
     $("<div>", {
         class: "form-group"
@@ -291,7 +440,7 @@ $('#bAddInfoCancion').click(function () {
             id: "compCan"
         })
 
-    ).appendTo('#formNuevaLetra');
+    ).insertAfter($('#durCan'));
 
     $("<div>", {
         class: "form-group"
@@ -309,7 +458,7 @@ $('#bAddInfoCancion').click(function () {
             id: "linkYou"
         })
 
-    ).appendTo('#formNuevaLetra');
+    ).insertAfter($('#compCan'));
 
     $("<div>", {
         class: "form-group"
@@ -320,13 +469,82 @@ $('#bAddInfoCancion').click(function () {
 
         }).text("Comentario sobre la canción:"),
 
-        $("<input>", {
+        $("<textarea>", {
             class: "form-control",
-            type: "text",
             name: "comenCan",
             id: "comenCan"
         })
 
-    ).appendTo('#formNuevaLetra');
+    ).insertAfter($('#linkYou'));
 
+})
+
+/*$('#bRestaurarPass').click(function () {
+
+    alert()
+
+    $("<div>", {
+        class: "alert alert-success"
+    }).append(
+         $("<span>", {
+         class: "glyphicon glyphicon-info-sign"
+         }),
+
+         $("<strong>").text("Su contraseña ha sido modificada."),
+         $("<br>"),
+         "Puedes iniciar sesión en tu cuenta con la contraseña proporcionada."
+
+    ).prependTo($('#formularioLogin'));
+
+})*/
+
+$('#linkIntLetraN').click(function () {
+
+    $("#avisoIntN").remove();
+
+    $("<div>", {
+        id: "avisoIntN",
+        class: "alert alert-warning"
+    }).append(
+        $("<span>", {
+            class: "glyphicon glyphicon-warning-sign"
+        }),
+
+        $("<strong>").text("Los intérpretes que empiezan por N y por Ñ se muestran en la misma lista.")
+
+    ).prependTo($('#listaIntLetra'));
+})
+
+$('#linkCanLetraN').click(function () {
+
+    $("#avisoCanN").remove();
+
+    $("<div>", {
+        id: "avisoCanN",
+        class: "alert alert-warning"
+    }).append(
+        $("<span>", {
+            class: "glyphicon glyphicon-warning-sign"
+        }),
+
+        $("<strong>").text("Las letras de canciones que empiezan por N y por Ñ se muestran en la misma lista.")
+
+    ).prependTo($('#listaLetCanLetra'));
+})
+
+$('#linkAlbLetraN').click(function () {
+
+    $("#avisoAlbN").remove();
+
+    $("<div>", {
+        id: "avisoAlbN",
+        class: "alert alert-warning"
+    }).append(
+        $("<span>", {
+            class: "glyphicon glyphicon-warning-sign"
+        }),
+
+        $("<strong>").text("Los álbumes que empiezan por N y por Ñ se muestran en la misma lista.")
+
+    ).prependTo($('#listaLetCanLetra'));
 })

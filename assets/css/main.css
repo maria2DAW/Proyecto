@@ -148,8 +148,10 @@ a:after {
    ========================================================================== */
 
 #headerwrap {
-	/*background: url(../img/header-bg.jpg) no-repeat center top;*/
-        background-color: #3498db;
+	/*background: url(../img/audio_cassette.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;*/
+    background-color: #3498db;
 	margin-top: -20px;
 	padding-top:20px;
 	text-align:center;
@@ -485,6 +487,29 @@ a:after {
     cursor: pointer;
 }
 
-img{
-    width: 70px;
+a{
+    cursor: pointer;
+}
+
+ul{
+    list-style: none;
+}
+
+#imgCategoria{
+    width: 200px;
+}
+
+.list-inline>li{
+    padding-right: 30px;
+    padding-left: 30px;
+    padding-bottom: 30px;
+}
+
+.vistaInfo{
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.vistaInfo h3{
+    text-transform: uppercase;
 }
