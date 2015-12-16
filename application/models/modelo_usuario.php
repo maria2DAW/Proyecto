@@ -23,6 +23,13 @@ class Modelo_usuario extends CI_Model
     	return $eSqlA->result();
     }
 	
+	public function obtener_usuario($idUsuario)
+	{
+		$qSqlA = 'SELECT * FROM usuario WHERE id_usuario = '.$idUsuario;
+		$eSqlA = $this->db->query($qSqlA);
+		return $eSqlA->row();
+	}
+	
 	public function insertar_usuario($nombreUsu, $email, $pass, $nombre, $apellidos, $pais)
 	{
 		$campos = array(

@@ -498,6 +498,58 @@ class Controlador_principal extends CI_Controller {
 		$this->load->view('plantillas/template', $data);
 	}
 	
+	public function formularioModificarUsuario($idUsuario)
+	{
+		$data['usuarioObtenido'] = $this->mod_usu->obtener_usuario($idUsuario);
+		
+		$listaContinentes = array('Asia','Africa','Europe','North America','Oceania','South America');
+		$data['listaContinentes'] = $listaContinentes;
+		
+		$listaPaisesContinente = array();
+		
+		for($i = 0; $i < count($listaContinentes); $i++)
+		{
+			$listaPais = $this->mod_pais->lista_paises_continente($listaContinentes[$i]);
+			array_push($listaPaisesContinente, $listaPais); 
+		}
+		
+		$data['listaPaisesContinente'] = $listaPaisesContinente;
+		
+		$data['title'] = "Modificar Usuario";
+		$data['main_content'] = 'formModificarUsuario';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function modificar_datos_usuario()
+	{
+		$idUsuario = $this->input->post('idUsuario');
+		$nombre = $this->input->post('nombre');
+		$apellidos = $this->input->post('apellidos');
+		$pais = $this->input->post('pais');
+		
+		$this->form_validation->set_rules('nomTipoInt', 'nombre del tipo de intérprete', 'required|alpha|min_length[3]|max_length[50]|trim|is_unique[tipo_interprete.nombre_tipo_interprete]');
+		
+        $this->form_validation->set_message('required', 'Debe introducir el %s');
+        $this->form_validation->set_message('alpha','El %s debe estar compuesto sólo por letras');
+        $this->form_validation->set_message('min_length','El %s debe tener al menos %s carácteres');
+        $this->form_validation->set_message('max_length','El %s debe tener como máximo %s carácteres');
+        $this->form_validation->set_message('is_unique','Este %s ya está registrado');
+		
+		if($this->form_validation->run() == false)
+		{
+			$this->formularioModificarTipoInterprete($idTipoInt);
+		}
+		
+		else 
+		{			
+			$nombreTipoInt = $this->input->post('nomTipoInt');
+			
+			$this->mod_tipo_int->modificar_usuario($idUsuario, $nombre, $apellidos, $pais);
+			
+			$this->gestion_tipos_interprete();
+		}
+	}
+	
 	public function dar_de_baja_usuario($idUsuario)
 	{
 		$this->mod_usu->baja_usuario($idUsuario);

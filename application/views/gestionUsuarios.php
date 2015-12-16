@@ -20,7 +20,7 @@ foreach($listaUsuarios as $usuario)
 	<?=$usuario->pais_usuario;  ?>
 	<?=$usuario->registro_usuario;  ?>
 	<?=$usuario->baja;  ?><br>
-	<a href='<?=base_url(); ?>index.php/Controlador_principal/formularioModificarTipoInterprete/<?=$tipoInterprete->id_tipo_interprete;?>'>Modificar</a>
+	<a href='<?=base_url(); ?>index.php/Controlador_principal/formularioModificarUsuario/<?=$usuario->id_usuario;?>'>Modificar</a>
 	<a href='<?=base_url(); ?>index.php/Controlador_principal/dar_de_baja_usuario/<?=$usuario->id_usuario;?>'>Dar de baja</a>	
 	<br><br>
 <?php
