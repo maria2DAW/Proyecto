@@ -7,7 +7,7 @@ class Controlador_principal extends CI_Controller {
      * @var Array que contiene las variables generales
      */
     private $data;
-	
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -479,6 +479,9 @@ class Controlador_principal extends CI_Controller {
 
     public function accesoUsuarios()
     {
+        $this->data['redireccionar'] = "index.php/Controlador_principal/accesoUsuarios";
+
+
         $nombreUsuario = $this->session->userdata['nombreregistro'];
         $this->data['usuarioConectado'] = $this->mod_usu->obtener_usuario_por_registro($nombreUsuario);
 
@@ -952,13 +955,10 @@ class Controlador_principal extends CI_Controller {
 	{
 		$idUsuario = $this->input->post('idUsuario');
 		
-		$this->form_validation->set_rules('nombre', 'nombre del usuario', 'required|alpha|min_length[3]|max_length[50]|trim');
-		$this->form_validation->set_rules('apellidos', 'apellidos del usuario', 'required|alpha|min_length[3]|max_length[200]|trim');
+		$this->form_validation->set_rules('nombre', 'nombre del usuario', 'required|min_length[3]|max_length[50]|trim|callback_alpha_space');
+		$this->form_validation->set_rules('apellidos', 'apellidos del usuario', 'required|min_length[3]|max_length[200]|trim|callback_alpha_space');
 		
-        $this->form_validation->set_message('required', 'Debe introducir el campo %s');
-        $this->form_validation->set_message('alpha','El campo %s debe estar compuesto sólo por letras');
-        $this->form_validation->set_message('min_length','El campo %s debe tener al menos %s carácteres');
-        $this->form_validation->set_message('max_length','El campo %s debe tener como máximo %s carácteres');
+        $this->form_validation->set_message('alpha_space', 'El campo %s debe estar compuesto sólo por letras');
 		
 		if($this->form_validation->run() == false)
 		{
@@ -972,8 +972,8 @@ class Controlador_principal extends CI_Controller {
 			$pais = $this->input->post('pais');
 			
 			$this->mod_usu->modificar_usuario($idUsuario, $nombre, $apellidos, $pais);
-			
-			$this->gestion_usuarios();
+
+            redirect($this->redireccionar, 'refresh');
 		}
 	}
 	

@@ -540,6 +540,7 @@ $('#linkAlbLetraN').click(function () {
         id: "avisoAlbN",
         class: "alert alert-warning"
     }).append(
+
         $("<span>", {
             class: "glyphicon glyphicon-warning-sign"
         }),
