@@ -6,12 +6,11 @@
 
 <form action='<?= base_url(); ?>index.php/Controlador_principal/guardar_datos_interprete' method='post' enctype="multipart/form-data">
 	<label for='nomInt' >Nombre del intérprete: </label>
-	<input type='text' name='nomInt' id='nomInt' /><br><br>
+	<input type='text' name='nomInt' id='nomInt' value='<?= set_value('nomInt');?>' /><br><br>
+	<?=form_error('nomInt'); ?>
 	
 	<label for='tipoInt' >Tipo de intérprete: </label>
 	<select name="tipoInt" id="tipoInt">
-		<!--<option>Cantante</option>
-		<option>Banda</option>-->
 		
 		<?php
 		
@@ -39,10 +38,12 @@
 	<br><br>
 	
 	<label for='orgInt' >Origen del intérprete: </label>
-	<input type='text' name='orgInt' id='orgInt' /><br><br>
+	<input type='text' name='orgInt' id='orgInt' value='<?= set_value('orgInt');?>' /><br><br>
+	<?=form_error('orgInt'); ?><br><br>
 	
 	<label for='bioInt' >Biografía del interprete: </label><br>
-	<textarea name="bioInt" id="bioInt"></textarea><br><br>
+	<textarea name="bioInt" id="bioInt" value='<?= set_value('bioInt');?>' ></textarea><br><br>
+	<?=form_error('bioInt'); ?><br><br>
 	
 	<label for='imgInt' >Imagen del intérprete: </label>
 	<input type='file' name='imgInt' id='imgInt' /><br><br>

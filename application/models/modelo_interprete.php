@@ -16,6 +16,13 @@ class Modelo_interprete extends CI_Model
     	return $eSqlA->result();
     }
 	
+	public function lista_interpretes_odenada($ordenacion)
+    {
+    	$qSqlA = 'SELECT * from interprete ORDER BY '.$ordenacion.';';
+    	$eSqlA = $this->db->query($qSqlA);
+    	return $eSqlA->result();
+    }
+	
 	public function lista_interpretes_empiezan_por_letra($letra)
     {
     	$qSqlA = "SELECT * FROM interprete WHERE nombre_interprete LIKE '".$letra."%' ORDER BY nombre_interprete";

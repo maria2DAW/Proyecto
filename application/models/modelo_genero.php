@@ -15,6 +15,47 @@ class Modelo_genero extends CI_Model
     	return $eSqlA->result();
     }
 	
+	public function lista_generos_odenada($ordenacion)
+    {
+    	$qSqlA = 'SELECT * from genero ORDER BY '.$ordenacion.';';
+    	$eSqlA = $this->db->query($qSqlA);
+    	return $eSqlA->result();
+    }
+	
+	public function obtener_genero($idGenero)
+	{
+		$qSqlA = 'SELECT * FROM genero WHERE id_genero = '.$idGenero;
+		$eSqlA = $this->db->query($qSqlA);
+		return $eSqlA->row();
+	}
+	
+	public function nuevo_genero($nombreGenero)
+	{
+		$campos = array(
+		'id_genero' => NULL,
+		'nombre_genero' => $nombreGenero
+		);
+		
+		$this->db->insert('genero',$campos);
+	}
+	
+	public function modificar_genero($idGenero, $nombreGenero)
+    {
+    	$data = array(
+		'nombre_genero' => $nombreGenero
+		);
+		
+		$this->db->where('id_genero', $idGenero);
+		$this->db->update('genero', $data); 
+    }
+	
+	public function eliminar_genero($idGenero)
+    {
+    	$this->db->where('id_genero', $idGenero);
+		return $this->db->delete('genero');
+    }
+	
+	//Géneros Intérprete
 	public function insertar_genero_interprete($idInterprete, $idGenero)
 	{
 		$campos = array(
@@ -32,6 +73,7 @@ class Modelo_genero extends CI_Model
     	return $eSqlA->result();
     }
 
+	//Géneros Álbum
 	public function insertar_genero_album($idAlbum, $idGenero)
 	{
 		$campos = array(

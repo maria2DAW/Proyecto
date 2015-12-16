@@ -24,7 +24,14 @@
 			
 			for($j = 0; $j < count($listaPaisesContinente[$i]); $j++)
 			{
-				echo "<option value='".$listaPaisesContinente[$i][$j]["id_pais"]."'>".$listaPaisesContinente[$i][$j]["nombre_pais"]."</option>";
+				echo "<option value='".$listaPaisesContinente[$i][$j]["id_pais"]."'";
+				
+				if($listaPaisesContinente[$i][$j]["id_pais"] == $usuarioObtenido->pais_usuario)
+				{
+					echo " selected='selected'";
+				}
+				
+				echo ">".$listaPaisesContinente[$i][$j]["nombre_pais"]."</option>";
 			}
 			
 			echo "</optgroup>";
@@ -39,9 +46,5 @@
 	<input type='submit' value='Enviar Datos' ><br><br>
 	
 </form>
-
-<div>
-        <?php echo validation_errors(); ?>
-</div>
 
 <br><br>

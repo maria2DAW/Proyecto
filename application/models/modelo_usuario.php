@@ -18,9 +18,23 @@ class Modelo_usuario extends CI_Model
 	
 	public function lista_usuarios_odenada($ordenacion)
     {
-    	$qSqlA = 'SELECT * from usuario ORDER BY "'.$ordenacion.'";';
+    	$qSqlA = 'SELECT * from usuario ORDER BY '.$ordenacion.';';
     	$eSqlA = $this->db->query($qSqlA);
     	return $eSqlA->result();
+    }
+	
+	public function numero_usuarios()
+    {
+    	$qSqlA = 'SELECT * FROM usuario';
+    	$eSqlA = $this->db->query($qSqlA);
+    	return $eSqlA->num_rows();
+    }
+	
+	public function numero_usuarios_baja($baja)
+    {
+    	$qSqlA = 'SELECT * FROM usuario WHERE baja = '.$baja;
+    	$eSqlA = $this->db->query($qSqlA);
+    	return $eSqlA->num_rows();
     }
 	
 	public function obtener_usuario($idUsuario)

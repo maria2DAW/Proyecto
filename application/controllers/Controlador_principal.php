@@ -24,6 +24,11 @@ class Controlador_principal extends CI_Controller {
 		$this->load->view('plantillas/template', $data);
 	}
 	
+	function alpha_space($str)
+	{
+		return ( ! preg_match("/^([a-z ])+$/i", $str)) ? FALSE : TRUE;
+	}
+	
 	public function formularioNuevoInterprete() 
 	{
 		$data['listaTiposInterprete'] = $this->mod_tipo_int->lista_tipos_interprete();
@@ -36,53 +41,74 @@ class Controlador_principal extends CI_Controller {
 	}
 	
 	public function guardar_datos_interprete()
-	{
+	{		
 		$nombreInt = $this->input->post('nomInt');
 		$tipoInt = $this->input->post('tipoInt');
 		$origenInt = $this->input->post('orgInt');
 		$biografiaInt = $this->input->post('bioInt');
-		$imagenInt = $this->input->post('imgInt');
+		$imagenInt = NULL;			
 		
-		$config['upload_path'] = './assets/img/';
-		$config['allowed_types'] = 'gif|jpg|png';
-		$config['max_size']	= '2048';
-		$config['max_width']  = '1080';
-		$config['max_height']  = '1024';
-		$config['max_filename'] = '200';
+		$this->form_validation->set_rules('nomInt', 'nombre de intérprete', 'trim|required|max_length[50]|is_unique[interprete.nombre_interprete]');
+		$this->form_validation->set_rules('orgInt', 'origen de intérprete', 'trim|max_length[50]|callback_alpha_space['.$origenInt.']');
 		
-		$this->load->library('upload', $config);
+        $this->form_validation->set_message('required', 'Debe introducir el campo %s');
+		$this->form_validation->set_message('alpha_space','El campo %s debe estar compuesto sólo por letrasssss');
+        $this->form_validation->set_message('max_length','El campo %s debe tener como máximo %s carácteres');
+        $this->form_validation->set_message('is_unique','Este %s ya existe');
 		
-		if ($this->upload->do_upload('imgInt'))
-        {
-			$datosImagenSubida  = $this->upload->data();			
-			$imagenInt = $datosImagenSubida['file_name'];
+		if($this->form_validation->run() == FALSE)
+		{
+			$this->formularioNuevoInterprete();
 		}
 		
-		/*else
+		else
 		{
-			$data['title'] = "Intérprete no añadido";
-			$data['main_content'] = 'formularioNuevoInterprete';
-			$this->load->view('plantillas/template', $data);
-		}*/
-		
-		$nombreUsuario = $this->session->userdata['nombreregistro'];
-		$codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
-		
-		$this->mod_int->insertar_interprete($nombreInt, $tipoInt, $origenInt, $biografiaInt, $imagenInt, $codigoUsuario);
-		
-		$idInsertInterprete = $this->mod_int->obtener_id_interprete_ultimo_insert();
-		$data["idInsertInterprete"] = $idInsertInterprete;
-		
-		$generosInterprete = $this->input->post('genInt');
-		
-		foreach($generosInterprete as $generoInte)
-		{
-			$this->mod_gen->insertar_genero_interprete($idInsertInterprete, $generoInte);
+			//Subir imagen
+			
+			$config['upload_path'] = './assets/img/';
+			$config['allowed_types'] = 'gif|jpg|png';
+			$config['max_size']	= '2048';
+			$config['max_width']  = '1080';
+			$config['max_height']  = '1024';
+			$config['max_filename'] = '200';
+			
+			$this->load->library('upload', $config);
+			
+			if ($this->upload->do_upload('imgInt'))
+			{
+				$datosImagenSubida  = $this->upload->data();			
+				$imagenInt = $datosImagenSubida['file_name'];
+			}
+			
+			//Se inserta el intérprete
+			
+			$nombreUsuario = $this->session->userdata['nombreregistro'];
+			$codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
+			
+			$this->mod_int->insertar_interprete($nombreInt, $tipoInt, $origenInt, $biografiaInt, $imagenInt, $codigoUsuario);
+			
+			//Géneros seleccionados			
+			
+			$idInsertInterprete = $this->mod_int->obtener_id_interprete_ultimo_insert();
+			$data["idInsertInterprete"] = $idInsertInterprete;
+			
+			$generosInterprete = $this->input->post('genInt');	//Devuelve un array con los géneros seleccionados		
+			
+			//Si hay géneros seleccionados se insertan
+			if(count($generosInterprete) > 0)
+			{
+				foreach($generosInterprete as $generoInte)
+				{
+					$this->mod_gen->insertar_genero_interprete($idInsertInterprete, $generoInte);
+				}
+			}
+			
+			$this->gestion_interpretes();
+			
+			/*$data['title'] = "Datos intérprete";
+			$data['main_content'] = 'haciendoPruebas';
+			$this->load->view('plantillas/template', $data);*/
 		}
-		
-		$data['title'] = "Datos intérprete";
-		$data['main_content'] = 'haciendoPruebas';
-		$this->load->view('plantillas/template', $data);
 	}
 	
 	public function formularioNuevoAlbum() 
@@ -523,30 +549,29 @@ class Controlador_principal extends CI_Controller {
 	public function modificar_datos_usuario()
 	{
 		$idUsuario = $this->input->post('idUsuario');
-		$nombre = $this->input->post('nombre');
-		$apellidos = $this->input->post('apellidos');
-		$pais = $this->input->post('pais');
 		
-		$this->form_validation->set_rules('nomTipoInt', 'nombre del tipo de intérprete', 'required|alpha|min_length[3]|max_length[50]|trim|is_unique[tipo_interprete.nombre_tipo_interprete]');
+		$this->form_validation->set_rules('nombre', 'nombre del usuario', 'required|alpha|min_length[3]|max_length[50]|trim');
+		$this->form_validation->set_rules('apellidos', 'apellidos del usuario', 'required|alpha|min_length[3]|max_length[200]|trim');
 		
-        $this->form_validation->set_message('required', 'Debe introducir el %s');
-        $this->form_validation->set_message('alpha','El %s debe estar compuesto sólo por letras');
-        $this->form_validation->set_message('min_length','El %s debe tener al menos %s carácteres');
-        $this->form_validation->set_message('max_length','El %s debe tener como máximo %s carácteres');
-        $this->form_validation->set_message('is_unique','Este %s ya está registrado');
+        $this->form_validation->set_message('required', 'Debe introducir el campo %s');
+        $this->form_validation->set_message('alpha','El campo %s debe estar compuesto sólo por letras');
+        $this->form_validation->set_message('min_length','El campo %s debe tener al menos %s carácteres');
+        $this->form_validation->set_message('max_length','El campo %s debe tener como máximo %s carácteres');
 		
 		if($this->form_validation->run() == false)
 		{
-			$this->formularioModificarTipoInterprete($idTipoInt);
+			$this->formularioModificarUsuario($idUsuario);
 		}
 		
 		else 
-		{			
-			$nombreTipoInt = $this->input->post('nomTipoInt');
+		{
+			$nombre = $this->input->post('nombre');
+			$apellidos = $this->input->post('apellidos');
+			$pais = $this->input->post('pais');
 			
-			$this->mod_tipo_int->modificar_usuario($idUsuario, $nombre, $apellidos, $pais);
+			$this->mod_usu->modificar_usuario($idUsuario, $nombre, $apellidos, $pais);
 			
-			$this->gestion_tipos_interprete();
+			$this->gestion_usuarios();
 		}
 	}
 	
@@ -558,4 +583,105 @@ class Controlador_principal extends CI_Controller {
 	}
 	
 	//FIN Usuario
+	
+	//Géneros
+	
+	public function gestion_generos()
+	{
+		$data['listaGeneros'] = $this->mod_gen->lista_generos_odenada("id_genero");
+		
+		$data['title'] = "Gestión de géneros";
+		$data['main_content'] = 'gestionGeneros';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function formularioNuevoGenero()
+	{
+		$data['title'] = "Nuevo Género";
+		$data['main_content'] = 'formNuevoGenero';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function guardar_datos_genero()
+	{
+		$this->form_validation->set_rules('nomGen', 'nombre del género', 'required|alpha|min_length[3]|max_length[100]|trim|is_unique[genero.nombre_genero]');
+		
+        $this->form_validation->set_message('required', 'Debe introducir el %s');
+        $this->form_validation->set_message('alpha','El %s debe estar compuesto sólo por letras');
+        $this->form_validation->set_message('min_length','El %s debe tener al menos %s carácteres');
+        $this->form_validation->set_message('max_length','El %s debe tener como máximo %s carácteres');
+        $this->form_validation->set_message('is_unique','Este %s ya está registrado');
+		
+		if($this->form_validation->run() == false)
+		{
+			$this->formularioNuevoGenero();
+		}
+		
+		else 
+		{			
+			$nombreGen = $this->input->post('nomGen');
+			
+			$this->mod_gen->nuevo_genero($nombreGen);
+			
+			$this->gestion_generos();
+		}
+	}
+	
+	public function formularioModificarGenero($idGenero)
+	{
+		$data['generoObtenido'] = $this->mod_gen->obtener_genero($idGenero);
+		
+		$data['title'] = "Modificar Género";
+		$data['main_content'] = 'formModificarGenero';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	public function modificar_datos_genero()
+	{		
+		$idGenero = $this->input->post('idGen');
+		
+		$this->form_validation->set_rules('nomGen', 'nombre del género', 'required|alpha|min_length[3]|max_length[100]|trim|is_unique[genero.nombre_genero]');
+		
+        $this->form_validation->set_message('required', 'Debe introducir el %s');
+        $this->form_validation->set_message('alpha','El %s debe estar compuesto sólo por letras');
+        $this->form_validation->set_message('min_length','El %s debe tener al menos %s carácteres');
+        $this->form_validation->set_message('max_length','El %s debe tener como máximo %s carácteres');
+        $this->form_validation->set_message('is_unique','Este %s ya está registrado');
+		
+		if($this->form_validation->run() == false)
+		{
+			$this->formularioModificarGenero($idGenero);
+		}
+		
+		else 
+		{			
+			$nombreGenero = $this->input->post('nomGen');
+			
+			$this->mod_gen->modificar_genero($idGenero, $nombreGenero);
+			
+			$this->gestion_generos();
+		}
+	}
+	
+	public function eliminarGenero($idGenero)
+	{
+		$this->mod_gen->eliminar_genero($idGenero);
+		
+		$this->gestion_generos();
+	}
+	
+	//FIN Géneros
+	
+	//Intérpretes
+	
+	public function gestion_interpretes()
+	{
+		$data['listaInterpretes'] = $this->mod_int->lista_interpretes_odenada("nombre_interprete");
+		
+		$data['title'] = "Gestión de Intérpretes";
+		$data['main_content'] = 'gestionInterpretes';
+		$this->load->view('plantillas/template', $data);
+	}
+	
+	//FIN Intérpretes
 }	

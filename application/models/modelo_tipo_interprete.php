@@ -32,7 +32,7 @@ class Modelo_tipo_interprete extends CI_Model
 	
 	public function lista_tipos_interprete_odenada($ordenacion)
     {
-    	$qSqlA = 'SELECT * from tipo_interprete ORDER BY "'.$ordenacion.'";';
+    	$qSqlA = 'SELECT * from tipo_interprete ORDER BY '.$ordenacion.';';
     	$eSqlA = $this->db->query($qSqlA);
     	return $eSqlA->result();
     }
@@ -61,6 +61,6 @@ class Modelo_tipo_interprete extends CI_Model
     {
     	$this->db->where('id_tipo_interprete',$idTipoInt);
 		return $this->db->delete('tipo_interprete');
-    }	
+    }
 	
 }
