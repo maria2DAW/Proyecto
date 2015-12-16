@@ -6,7 +6,7 @@
 <script>
 
 function recogerLetra()
-{	//alert();
+{
 	var contenidoLetra = document.getElementById("wysihtml5-textarea");
 	//alert(contenidoLetra.value);
 	letraCancion.value = contenidoLetra.value;

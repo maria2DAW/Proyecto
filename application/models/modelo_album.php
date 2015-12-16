@@ -48,16 +48,6 @@ class Modelo_album extends CI_Model
 	{
 		$existe = false;
 		
-		/*$listaAlbumes = $this->lista_albumes();
-		
-		foreach ($listaAlbumes as $album)
-		{
-			if($album->nombre_album == $nombreAlbum)
-			{
-				$existe = true;
-			}
-		}*/
-		
 		$qSqlA = 'SELECT * from album WHERE nombre_album = "'.$nombreAlbum.'" AND interprete_album = '.$interpreteAlbum;
     	$eSqlA = $this->db->query($qSqlA);
 		
@@ -69,9 +59,9 @@ class Modelo_album extends CI_Model
 		return $existe;
 	}
 	
-	public function obtener_id_album($nombreAlbum)
+	public function obtener_id_album($interpreteAlbum, $nombreAlbum)
 	{
-		$qSqlA = $this->db->query('SELECT id_album from album where nombre_album = "'.$nombreAlbum.'";');
+		$qSqlA = $this->db->query('SELECT * from album WHERE nombre_album = "'.$nombreAlbum.'" AND interprete_album = '.$interpreteAlbum);
     	$row = $qSqlA->row();
 		return $row->id_album;
 	}

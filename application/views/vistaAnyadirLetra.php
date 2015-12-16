@@ -33,5 +33,4 @@
 
 <input type='submit' onClick="recogerLetra();" value='Enviar Letra' />
 </form>
-<input type="button" onClick="recogerLetra();" >
 <br><br>

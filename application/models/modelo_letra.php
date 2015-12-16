@@ -16,6 +16,13 @@ class Modelo_letra extends CI_Model
     	return $eSqlA->result();
     }
 	
+	public function obtenerLetra($idCancion)
+    {
+    	$qSqlA = 'SELECT * FROM letra_cancion WHERE cancion_letra = '.$idCancion;
+    	$eSqlA = $this->db->query($qSqlA);
+    	return $eSqlA->row();
+    }
+	
 	public function insertar_letra($cancionLetra, $contenidoLetra)
 	{
 		$campos = array(
@@ -25,5 +32,11 @@ class Modelo_letra extends CI_Model
 		);
 		
 		$this->db->insert('letra_cancion',$campos);
+	}
+	
+	public function eliminar_letra($idLetra)
+	{
+		$this->db->where('id_letra_cancion', $idLetra);
+		$this->db->delete('letra_cancion');
 	}
 }

@@ -11,9 +11,16 @@ class Modelo_cancion extends CI_Model
     
     public function lista_canciones()
     {
-    	$qSqlA = 'SELECT * from canciones';
+    	$qSqlA = 'SELECT * FROM cancion ORDER BY nombre_cancion';
     	$eSqlA = $this->db->query($qSqlA);
     	return $eSqlA->result();
+    }
+	
+	public function obtenerCancion($idCancion)
+    {
+    	$qSqlA = 'SELECT * FROM cancion WHERE id_cancion = '.$idCancion;
+    	$eSqlA = $this->db->query($qSqlA);
+    	return $eSqlA->row();
     }
 	
 	public function insertar_cancion($nombreCan, $albumCan, $duracionCan, $compositorCan, $comentarioCan, $enlaceYou, $usuarioCan)
@@ -44,26 +51,24 @@ class Modelo_cancion extends CI_Model
 		$this->db->insert('cancion',$campos);
 	}
 	
-	public function comprobar_existencia_cancion($nombreCancion)
+	public function comprobar_existencia_cancion($nombreCancion, $idAlbum, $idInterprete)
 	{
 		$existe = false;
 		
-		$listaCanciones = $this->lista_canciones();
+		$qSqlA = 'SELECT * from cancion c, album a WHERE c.nombre_cancion = "'.$nombreCancion.'" AND c.album_cancion = '.$idAlbum.' AND a.interprete_album = '.$idInterprete;
+    	$eSqlA = $this->db->query($qSqlA);
 		
-		foreach ($listaCanciones as $cancion)
+		if($eSqlA->num_rows() > 0)
 		{
-			if($cancion->nombre_cancion == $nombreCancion)
-			{
-				$existe = true;
-			}
+			$existe = true;
 		}
 		
 		return $existe;
 	}
 	
-	public function obtener_id_cancion($nombreCancion)
+	public function obtener_id_cancion($nombreCancion, $idAlbum, $idInterprete)
 	{
-		$qSqlA = $this->db->query('SELECT id_cancion from cancion where nombre_cancion = "'.$nombreCancion.'";');
+		$qSqlA = $this->db->query('SELECT * from cancion c, album a WHERE c.nombre_cancion = "'.$nombreCancion.'" AND c.album_cancion = '.$idAlbum.' AND a.interpre_album = '.$idInterprete);
     	$row = $qSqlA->row();
 		return $row->id_cancion;
 	}
@@ -72,5 +77,11 @@ class Modelo_cancion extends CI_Model
 	{
 		$insert_id = $this->db->insert_id();
 		return  $insert_id;
+	}
+	
+	public function obtener_interprete_cancion($idCancion)
+	{
+		$qSqlA = $this->db->query('SELECT * FROM cancion c, album a, interprete i WHERE c.id_cancion = '.$idCancion.' AND c.album_cancion = a.id_album AND a.interprete_album = i.id_interprete');
+		return $qSqlA->row();
 	}
 }	
