@@ -1,27 +1,31 @@
-<br>
+<div class="container">
+    <div class="row centered">
+        <h3 align="center" >Índice de intérpretes</h3>
 
-<head>Índice de intérpretes</head>
+        <br>
 
-<br><br>
+        <ul class="pagination" >
+            <li><a onclick="cargarSimbolos()" >#</a></li>
 
-<a onclick="cargarSimbolos()" >#</a><?=" | ";?>
+            <?php
 
-<?php 
+            foreach(range('A', 'Z') as $letter)
+            { ?>
+                <li><a onclick="cargarLetra('<?=$letter;?>')" >
+                <?=$letter;?>
+                </a></li>
 
-foreach(range('A', 'Z') as $letter)
-{ ?>
-	<a onclick="cargarLetra('<?=$letter;?>')" >
-	<?=$letter;?>
-	</a><?=" | ";?>
-	
-<?php
-}
-?>
+            <?php
+            }
+            ?>
 
-<a onclick="cargarNumeros()">0-9</a><?=" | ";?>
+            <li><a onclick="cargarNumeros()">0-9</a></li>
+        </ul>
 
-<br><br>
+        <br><br>
 
-<div id="cargaListaInterpretes">
-	
+        <div id="cargaListaInterpretes">
+
+        </div>
+    </div>
 </div>

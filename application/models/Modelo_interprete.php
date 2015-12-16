@@ -29,6 +29,14 @@ class Modelo_interprete extends CI_Model
     	$eSqlA = $this->db->query($qSqlA);
     	return $eSqlA->result();
     }
+
+    public function lista_interpretes_letra_paginado($segmento, $por_pagina, $letra)
+    {
+        $qSqlA = "SELECT * FROM interprete WHERE nombre_interprete LIKE '".$letra."%' ORDER BY nombre_interprete";
+        $qSqlA .= " LIMIT ".$segmento.", ".$por_pagina.";";
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
 	
 	public function lista_interpretes_empiezan_por_numero()
     {
@@ -42,6 +50,13 @@ class Modelo_interprete extends CI_Model
     	$qSqlA = "SELECT * FROM interprete WHERE nombre_interprete REGEXP '^[^[:alnum:]]' ORDER BY nombre_interprete";
     	$eSqlA = $this->db->query($qSqlA);
     	return $eSqlA->result();
+    }
+
+    public function lista_interpretes_usuario($idUsuario)
+    {
+        $qSqlA = "SELECT * FROM interprete WHERE usuario_interprete = ".$idUsuario;
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
     }
 	
 	public function insertar_interprete($nombreInt, $tipoInt, $origenInt, $biografiaInt, $imagenInt, $usuarioInt)
@@ -73,16 +88,6 @@ class Modelo_interprete extends CI_Model
 	public function comprobar_existencia_interprete($nombreInterprete)
 	{
 		$existe = false;
-		
-		/*$listaInterpretes = $this->lista_interpretes();
-		
-		foreach ($listaInterpretes as $interprete)
-		{
-			if($interprete->nombre_interprete == $nombreInterprete)
-			{
-				$existe = true;
-			}
-		}*/
 		
 		$qSqlA = 'SELECT * from interprete WHERE nombre_interprete = "'.$nombreInterprete.'";';
     	$eSqlA = $this->db->query($qSqlA);
@@ -126,6 +131,20 @@ class Modelo_interprete extends CI_Model
     {
 		$campos = $this->db->list_fields('interprete');
 		return $campos;
+    }
+
+    public function interpretes_con_mas_letras($numLimit)
+    {
+        $qSqlA = 'SELECT i.nombre_interprete, COUNT( a.interprete_album ) AS num_letras_int ';
+        $qSqlA .= 'FROM cancion c, album a, interprete i ';
+        $qSqlA .= 'WHERE c.album_cancion = a.id_album ';
+        $qSqlA .= 'AND a.interprete_album = i.id_interprete ';
+        $qSqlA .= 'GROUP BY i.id_interprete ';
+        $qSqlA .= 'ORDER BY num_letras_int DESC ';
+        $qSqlA .= 'LIMIT '.$numLimit;
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
     }
 }	
 	

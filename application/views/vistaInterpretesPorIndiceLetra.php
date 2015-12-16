@@ -1,21 +1,37 @@
-<br>
+<div class="container">
+    <div class="row">
+        <h4 align="center"><?=$letra;?></h4>
 
-<head>Intérpretes que empiezan por <?=$letra;?></head>
+        <br>
 
-<br><br>
+        <span>Intérpretes por esta letra: <?=$numInterpretesLetra;?></span>
 
-<?=count($listaInterpretesPorLetra);?>
+        <br><br><br>
 
-<?php 
+        <div class="row">
+            <ul style="text-align: left; list-style: none;">
 
-foreach($listaInterpretesPorLetra as $interpretePorLetra)
-{ ?>
-	<ul>
-		<li><a href="<?= base_url(); ?>index.php/Controlador_principal/vista_info_interpretes/<?=$interpretePorLetra->id_interprete;?>" ><?=$interpretePorLetra->nombre_interprete;?><a></li>
-	</ul>
-	
-<?php
-}
-?>
+                <?php
 
-<br><br>
+                foreach($listaInterpretesPorLetra as $interpretePorLetra)
+                { ?>
+                    <li>
+                        <div class="thumbnail">
+                            <img src="<?=base_url()?>/assets/img/interpretes/<?=$interpretePorLetra->imagen_interprete ?>" class="media-object pull-left" alt="imagen">
+                            <div class="caption">
+                                <h4><a href="<?= base_url(); ?>index.php/Controlador_principal/vista_info_interpretes/<?=$interpretePorLetra->id_interprete;?>"vvv ><?=$interpretePorLetra->nombre_interprete;?><a></h4>
+                            </div>
+                        </div>
+                    </li>
+                    <?php
+                }
+                ?>
+
+            </ul>
+        </div>
+
+        <div class="paginacion">
+            <?php echo $paginacion ?>
+        </div>
+    </div>
+</div>

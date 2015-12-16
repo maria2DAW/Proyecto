@@ -141,5 +141,18 @@ class Modelo_usuario extends CI_Model
         }
 
     }
+
+    public function usuarios_com_mas_letras_subidas($numLimit)
+    {
+        $qSqlA = 'SELECT u.nombre_registro_usuario, COUNT( c.usuario_cancion ) AS num_letras ';
+        $qSqlA .= 'FROM cancion c, usuario u ';
+        $qSqlA .= 'WHERE c.usuario_cancion = u.id_usuario ';
+        $qSqlA .= 'GROUP BY u.id_usuario ';
+        $qSqlA .= 'ORDER BY num_letras DESC ';
+        $qSqlA .= 'LIMIT '.$numLimit;
+
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
 	
 }

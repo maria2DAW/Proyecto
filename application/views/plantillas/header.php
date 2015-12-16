@@ -3,6 +3,7 @@
 	<head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <!--<link rel="stylesheet" type="text/css" href="<?=base_url(); ?>assets/css/style.css">-->
 
         <link rel="stylesheet" href="<?=base_url();?>assets/css/bootstrap-3.3.5-dist/css/bootstrap.min.css">
@@ -21,6 +22,12 @@
 
         <!-- Estilo para plugin select múltiple -->
         <link rel="stylesheet" type="text/css" href="<?=base_url();?>assets/js/jQuery-Multiple-Select/multiple-select.css">
+
+        <script>
+
+            var baseUrl = '<?=base_url(); ?>';
+
+        </script>
 
         <title><?=$title; ?></title>
 	</head>

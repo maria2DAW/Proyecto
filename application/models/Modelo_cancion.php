@@ -15,6 +15,13 @@ class Modelo_cancion extends CI_Model
     	$eSqlA = $this->db->query($qSqlA);
     	return $eSqlA->result();
     }
+
+    public function lista_canciones_usuario($idUsuario)
+    {
+        $qSqlA = "SELECT * FROM cancion WHERE usuario_cancion = ".$idUsuario;
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
 	
 	public function obtenerCancion($idCancion)
     {

@@ -13,6 +13,12 @@
 
 /* OVERALL ASPECT */
 
+/*Añadido por María*/
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body {
   background-color: #f2f2f2;
     font-family: "Lato";
@@ -29,6 +35,10 @@ body {
     /*margin-bottom: 60px;*/
 
     padding-top: 30px; /*Para que la barra de navegación no tape los contenidos de la parte superior */
+
+    /*Añadido por María*/
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
 
 /* Titles */
@@ -233,6 +243,34 @@ a:after {
 	color: white;
 }
 
+/*Añadido por María*/
+
+/* Green Wrap */
+
+#green {
+    background: #1abc9c;
+    margin-top: -20px;
+    margin-bottom: 20px;
+    padding-top: 15px;
+    padding-bottom: 35px;
+    color: #ffffff;
+}
+
+#green h4 {
+    font-weight: 700;
+    color: #ffffff;
+}
+
+#green i {
+    color: #a9a9a9;
+}
+
+#green span {
+    color: #a9a9a9;
+}
+
+/**/
+
 
 
 /* Footer Wrap */
@@ -240,12 +278,6 @@ a:after {
 	background: #2d2d2d;
 	padding-top: 30px;
 	padding-bottom: 30px;
-
-    /*position: absolute;
-    bottom: 0;
-    width: 100%;
-    /* Set the fixed height of the footer here */
-    /*height: 60px;*/
 }
 
 #f i {
@@ -256,6 +288,20 @@ a:after {
 
 #f i:hover {
 	color: #ff7878;
+}
+
+/*Añadido por María*/
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    background-color: #2d2d2d;
+}
+
+.verticalMid{
+    vertical-align: middle;
 }
 
 /****** SECTIONS *****/
@@ -421,10 +467,24 @@ a:after {
     background: #ff7878;
 }
 
+/*Añadido por María*/
+
 .btn-rosado,
 .btn-rosado:hover,
 .btn-rosado:active {
     color: white;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
     background-color: #ff7878;
+}
+
+#acercaDe{
+    cursor: pointer;
+}
+
+.pagination a{
+    cursor: pointer;
+}
+
+img{
+    width: 70px;
 }

@@ -42,21 +42,6 @@ class Controlador_principal extends CI_Controller {
 		//Lista de géneros
         $this->data['listaGeneros'] = $this->mod_gen->lista_generos();
 	}
-	
-	function alpha_space($str)
-	{
-		//return ( ! preg_match("/^[a-zñÑáéíóúÁÉÍÓÚ ]+$/i", $str)) ? FALSE : TRUE;
-
-       $validacion = FALSE;
-
-        if(preg_match("/^[a-zñÑáéíóúÁÉÍÓÚ ]+$/i", $str) || empty($str))
-        {
-            $validacion = TRUE;
-        }
-
-        return $validacion;
-
-	}
 
     public function establecerContenidoPrincipal($title, $contenido)
     {
@@ -65,10 +50,66 @@ class Controlador_principal extends CI_Controller {
         $this->load->view('plantillas/template', $this->data);
     }
 	
-	public function index() 
-	{		
+	public function index()
+    {
+        // -- Ranquins --
+        $this->data['numUsuarios'] = $this->mod_general->numero_registros("usuario");
+        $this->data['numInterpretes'] = $this->mod_general->numero_registros("interprete");
+        $this->data['numAlbumes'] = $this->mod_general->numero_registros("album");
+        $this->data['numLetras'] = $this->mod_general->numero_registros("letra_cancion");
+
+        $this->data['numTop'] = 5;
+        $this->data['numPuesto'] = 1;
+
+        $this->data['letraMasVisitadas'] = $this->mod_let->letras_mas_visitadas($this->data['numTop']);
+        $this->data['usuConMasLetras'] = $this->mod_usu->usuarios_com_mas_letras_subidas($this->data['numTop']);
+        $this->data['intConMasLetras'] = $this->mod_int->interpretes_con_mas_letras($this->data['numTop']);
+        // -- Ranquins --
+
 		$this->establecerContenidoPrincipal("Inicio", "inicio");
 	}
+
+    function alpha_space($str)
+    {
+        //return ( ! preg_match("/^[a-zñÑáéíóúÁÉÍÓÚ ]+$/i", $str)) ? FALSE : TRUE;
+
+        $validacion = FALSE;
+
+        if(preg_match("/^[a-zñÑáéíóúÁÉÍÓÚ ]+$/i", $str) || empty($str))
+        {
+            $validacion = TRUE;
+        }
+
+        return $validacion;
+
+    }
+
+    public function comprobarImagen($imagen, $directorio)
+    {
+        $comprobar = true;
+
+        $config['upload_path'] = './assets/img/'.$directorio.'/';
+        $config['allowed_types'] = 'gif|jpg|png';
+        $config['max_size']	= '2048';
+        $config['max_width']  = '1080';
+        $config['max_filename'] = '200';
+        $config['overwrite'] = TRUE;
+
+        $this->load->library('upload', $config);
+
+        if (isset($_FILES['imgSubida']) && !empty($_FILES['imgSubida']['name']))
+        {
+            if (!$this->upload->do_upload('imgSubida'))
+            {
+                // possibly do some clean up ... then throw an error
+                $this->form_validation->set_message('comprobarImagen', $this->upload->display_errors());
+
+                $comprobar = false;
+            }
+        }
+
+        return $comprobar;
+    }
 	
 	public function formularioNuevoInterprete() 
 	{
@@ -77,13 +118,14 @@ class Controlador_principal extends CI_Controller {
 	
 	public function guardar_datos_interprete()
 	{
+        $destino = "interpretes";
+
 		$this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
 		
 		$this->form_validation->set_rules('nomInt', 'nombre de intérprete', 'trim|required|max_length[50]|is_unique[interprete.nombre_interprete]');
 		$this->form_validation->set_rules('orgInt', 'origen de intérprete', 'trim|max_length[50]|callback_alpha_space');
+        $this->form_validation->set_rules('imgSubida', 'imágen de intérprete', 'trim|max_length[200]|callback_comprobarImagen['.$destino.']');
 		
-        $this->form_validation->set_message('required', 'Debe introducir el campo %s');
-        $this->form_validation->set_message('max_length','El campo %s debe tener como máximo %s carácteres');
         $this->form_validation->set_message('is_unique','Este %s ya existe');
 		$this->form_validation->set_message('alpha_space', 'El campo %s debe estar compuesto sólo por letras');
 		
@@ -100,25 +142,11 @@ class Controlador_principal extends CI_Controller {
                 'origen_interprete' => $this->input->post('orgInt'),
                 'biografia_interprete' => $this->input->post('bioInt')
             );
-			
-			//Subir imagen
-			
-			$config['upload_path'] = './assets/img/';
-			$config['allowed_types'] = 'gif|jpg|png';
-			$config['max_size']	= '2048';
-			$config['max_width']  = '1080';
-			$config['max_height']  = '1024';
-			$config['max_filename'] = '200';
-			
-			$this->load->library('upload', $config);
-			
-			if ($this->upload->do_upload('imgInt'))
-			{
-				$datosImagenSubida  = $this->upload->data();			
-				$imagenInt = $datosImagenSubida['file_name'];
 
-                $datosInterprete['imagen_interprete'] = $imagenInt;
-			}
+            if(isset($_FILES['imgSubida']) && !empty($_FILES['imgSubida']['name']))
+            {
+                $datosInterprete['imagen_interprete'] = $_FILES['imgSubida']['name'];
+            }
 			
 			//Se inserta el intérprete
 			
@@ -132,15 +160,11 @@ class Controlador_principal extends CI_Controller {
 			
 			$idInsertInterprete = $this->mod_general->obtener_id_ultimo_insert();
 			
-			//$generosInterprete = $this->input->post('genInt');
-
-            $generosInterprete = $this->input->post('generosRecogidos'); //El post contiene un string con todos los valores de los géneros
+			$generosInterprete = $this->input->post('genInt');
 			
 			if(count($generosInterprete) > 0) //Si $generosInterprete no está vacío
 			{
-                $arrGenerosInterprete = explode(",", $generosInterprete); //creamos con explode un array con todos los valores de los géneros
-
-				foreach($arrGenerosInterprete as $generoInte) //Insertamos todos los géneros de dicho intérprete
+				foreach($generosInterprete as $generoInte) //Insertamos todos los géneros de dicho intérprete
 				{
 					$this->mod_gen->insertar_genero_interprete($idInsertInterprete, $generoInte);
 				}
@@ -158,18 +182,19 @@ class Controlador_principal extends CI_Controller {
 	//Arreglar función
     public function guardar_datos_album()
 	{
+        $destino = "albumes";
+
+        $interpreteAlb = $this->input->post('intAlb');
+
 		$this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
 		
-		$this->form_validation->set_rules('nomAlb', 'nombre de intérprete', 'trim|required|max_length[30]');
-		$this->form_validation->set_rules('intAlb', 'nombre de intérprete', 'trim|required|max_length[50]');
-		$this->form_validation->set_rules('numPis', 'origen de intérprete', 'trim|max_length[3]|numeric');
-		$this->form_validation->set_rules('anLan', 'origen de intérprete', 'trim|exact_length[4]|numeric');
-		
-        $this->form_validation->set_message('required', 'Debe introducir el campo %s');
-        $this->form_validation->set_message('max_length','El campo %s debe tener como máximo %s carácteres');
-        $this->form_validation->set_message('is_unique','Este %s ya existe');
-		$this->form_validation->set_message('alpha_space', 'El campo %s debe estar compuesto sólo por letras');
-	
+		$this->form_validation->set_rules('nomAlb', 'nombre del álbum', 'trim|required|max_length[30]|callback_comprobarExistenciaAlbum['.$interpreteAlb.']');
+		$this->form_validation->set_rules('intAlb', 'intérprete del álbum', 'trim|required|max_length[50]');
+		$this->form_validation->set_rules('numPis', 'nº de pistas del álbum', 'trim|max_length[3]|numeric');
+		$this->form_validation->set_rules('anLan', 'año del álbum', 'trim|exact_length[4]|numeric');
+        $this->form_validation->set_rules('imgSubida', 'imágen de intérprete', 'trim|max_length[200]|callback_comprobarImagen['.$destino.']');
+
+        $this->form_validation->set_message('comprobarExistenciaAlbum', 'Este álbum ya existe para este intérprete');
 	
 		if(!$this->form_validation->run())
 		{
@@ -178,51 +203,76 @@ class Controlador_principal extends CI_Controller {
 		
 		else
 		{
-			$nombreAlb = $this->input->post('nomAlb');
-			$InterpreteAlb = $this->input->post('intAlb');
-			$generoAlb = $this->input->post('genAlb');
-			$numeroPis = $this->input->post('numPis');
-			$anyoLan = $this->input->post('anLan');
-			$informacionAlb = $this->input->post('infAlb');
-			$imagenAlb = null;
+            $datosAlbum = array(
+                'nombre_album' => $this->input->post('nomAlb'),
+                'numero_pistas' => $this->input->post('numPis'),
+                'anyo_lanzamiento' => $this->input->post('anLan'),
+                'informacion_album' => $this->input->post('infAlb')
+            );
+
+            if(isset($_FILES['imgSubida']) && !empty($_FILES['imgSubida']['name']))
+            {
+                $datosAlbum['imagen_album'] = $_FILES['imgSubida']['name'];
+            }
+
+            $nombreUsuario = $this->session->userdata['nombreregistro'];
+            $idUsu = $this->mod_usu->obtener_id_usuario($nombreUsuario);
 			
-			$config['upload_path'] = './assets/img/';
-			$config['allowed_types'] = 'gif|jpg|png';
-			$config['max_size']	= '2048';
-			$config['max_width']  = '1080';
-			$config['max_height']  = '1024';
-			$config['max_filename'] = '200';
-			
-			$this->load->library('upload', $config);
-			
-			if ($this->upload->do_upload('imgAlb'))
+			if ( !$this->mod_int->comprobar_existencia_interprete($interpreteAlb))
 			{
-				$datosImagenSubida  = $this->upload->data();			
-				$imagenAlb = $datosImagenSubida['file_name'];			
+				$this->mod_int->insertar_solo_nombre_interprete($interpreteAlb, $idUsu);
+                $datosAlbum['interprete_album'] = $this->mod_general->obtener_id_ultimo_insert();
 			}
-			
-			/*else
-			{
-				$data['title'] = "Álbum no añadido";
-				$data['main_content'] = 'formularioNuevoAlbum';
-				$this->load->view('plantillas/template', $data);
-			}*/
-			
-			if ( !$this->mod_int->comprobar_existencia_interprete($InterpreteAlb))
-			{
-				$this->mod_int->insertar_solo_nombre_interprete($InterpreteAlb);
-			}
-			
-			$codigoInterprete = $this->mod_int->obtener_id_interprete($InterpreteAlb);
-			
-			$nombreUsuario = $this->session->userdata['nombreregistro'];
-			$codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
-			
-			$this->mod_alb->insertar_album($nombreAlb, $codigoInterprete, $generoAlb, $numeroPis, $anyoLan, $informacionAlb, $imagenAlb, $codigoUsuario);
+
+            else
+            {
+                $datosAlbum['interprete_album'] = $this->mod_int->obtener_id_interprete($interpreteAlb);
+            }
+
+            $datosAlbum['usuario_album'] = $idUsu;
+
+            $this->mod_general->insertar("album", $datosAlbum);
+            $idInsertAlbum = $this->mod_general->obtener_id_ultimo_insert();
+
+            //Géneros seleccionados
+
+            $generosAlbum = $this->input->post('genAlb');
+
+            if(count($generosAlbum) > 0) //Si $generosInterprete no está vacío
+            {
+                foreach($generosAlbum as $generoAlbu) //Insertamos todos los géneros de dicho intérprete
+                {
+                    $this->mod_gen->insertar_genero_album($idInsertAlbum, $generoAlbu);
+                }
+            }
 			
 			$this->index();
 		}
 	}
+
+    public function comprobarExistenciaAlbum($nAlb, $iAlb)
+    {
+        $comprobacion = true;
+
+        if ($this->mod_int->comprobar_existencia_interprete($iAlb))
+        {
+            $idInterpreteAlb = $this->mod_int->obtener_id_interprete($iAlb);
+
+            if($this->mod_alb->comprobar_existencia_album($nAlb, $idInterpreteAlb))
+            {
+                $comprobacion =  false;
+            }
+        }
+
+        return $comprobacion;
+    }
+
+    public function indice_albumes()
+    {
+        $this->data['listaAlbumes'] = $this->mod_general->lista__odenada('album', 'nombre_album');
+
+        $this->establecerContenidoPrincipal('Índice de letras', 'indiceAlbumes');
+    }
 	
 	public function formularioLoguear() 
 	{
@@ -239,8 +289,7 @@ class Controlador_principal extends CI_Controller {
 		$this->form_validation->set_rules('nomUsu', 'nombre de usuario', 'required|callback_validarUsuarioYPassword['.$pass.']');
 		$this->form_validation->set_rules('passUsu', 'contraseña', 'required');
 
-		$this->form_validation->set_message('required', 'Debe introducir el campo %s');
-        $this->form_validation->set_message('validarUsuarioYPassword', 'Nombre de usuario o contraseña incorrecto');
+		$this->form_validation->set_message('validarUsuarioYPassword', 'Nombre de usuario o contraseña incorrecto');
 
 		if($this->form_validation->run() == false)
 		{
@@ -254,7 +303,6 @@ class Controlador_principal extends CI_Controller {
 
             $datos_sesion = array(
                     'nombreregistro' => $usuariObtenido->nombre_registro_usuario,
-                    'passwordusuario' => $usuariObtenido->password_usuario,
                     'nivelusuario' => $usuariObtenido->nivel_usuario
             );
 
@@ -273,6 +321,16 @@ class Controlador_principal extends CI_Controller {
     public function accesoUsuarios()
     {
         $nombreUsuario = $this->session->userdata['nombreregistro'];
+        $this->data['usuarioConectado'] = $this->mod_usu->obtener_usuario_por_registro($nombreUsuario);
+
+        $this->data['paisUsuario'] = $this->mod_pais->obtener_nombre_pais($this->data['usuarioConectado']->pais_usuario);
+
+        $this->data['interpretesUsuario'] = $this->mod_int->lista_interpretes_usuario($this->data['usuarioConectado']->id_usuario);
+
+        $this->data['albumesUsuario'] = $this->mod_alb->lista_albumes_usuario($this->data['usuarioConectado']->id_usuario);
+
+        $this->data['cancionesUsuario'] = $this->mod_can->lista_canciones_usuario($this->data['usuarioConectado']->id_usuario);
+
         $nivelUsuario = $this->session->userdata['nivelusuario'];
 
         if($nivelUsuario == 'A')
@@ -309,7 +367,7 @@ class Controlador_principal extends CI_Controller {
 		$this->mod_usu->cerrarSesion();
 
         $this->data['enlaceLogin'] = 'accesoUsuarios';
-        $this->data['login'] = 'Log in';
+        $this->data['login'] = 'LOG IN';
 		
 		$this->formularioLoguear();
 	}
@@ -343,14 +401,9 @@ class Controlador_principal extends CI_Controller {
         $this->form_validation->set_rules('apellidos', 'apellidos', 'required|trim|callback_alpha_space');
         $this->form_validation->set_rules('email', 'e-mail', 'required|valid_email|trim|is_unique[usuario.email_usuario]');
 
-        $this->form_validation->set_message('required', 'Debe introducir el campo %s');
-        $this->form_validation->set_message('valid_email', 'Dirección de e-mail no válida');
-        $this->form_validation->set_message('matches', 'Los campos %s y %s no coinciden');
+
         $this->form_validation->set_message('alpha_space','El campo %s debe estar compuesto sólo por letras');
-        $this->form_validation->set_message('min_length','El campo %s debe tener al menos %s carácteres');
-        $this->form_validation->set_message('max_length','El campo %s debe tener como máximo %s carácteres');
-        $this->form_validation->set_message('exact_length','El campo %s debe tener %s carácteres');
-        $this->form_validation->set_message('is_unique','Este %s ya está registrado');
+        $this->form_validation->set_message('is_unique','Este %s ya existe');
 		
 		if($this->form_validation->run() == false)
 		{
@@ -373,11 +426,7 @@ class Controlador_principal extends CI_Controller {
 	}
 	
 	public function indice_interpretes()
-	{		
-		/*$data['title'] = "Índice de intérpretes";
-		$data['main_content'] = 'indiceInterpretes';
-		$this->load->view('plantillas/template', $data);*/
-
+	{
         $this->establecerContenidoPrincipal('Índice de intérpretes', 'indiceInterpretes');
 	}
 	
@@ -397,8 +446,47 @@ class Controlador_principal extends CI_Controller {
 	
 	public function interpretes_por_indice_letra($letra)
 	{
-        $this->data['listaInterpretesPorLetra'] = $this->mod_int->lista_interpretes_empiezan_por_letra($letra);
+        $this->data['numInterpretesLetra'] = count($this->mod_int->lista_interpretes_empiezan_por_letra($letra));
+
+        $pages = 10; //Número de registros mostrados por páginas
+
+        $desde = ($this->uri->segment(4)) ? $this->uri->segment(4) : 0;
+
+        $config['uri_segment'] = 4;
+        $config['base_url'] = base_url() . 'index.php/Controlador_principal/indice_interpretes/pagina/'; // parametro base de la aplicación, si tenemos un .htaccess nos evitamos el index.php
+        $config['total_rows'] = $this->data['numInterpretesLetra'];
+        $config['per_page'] = $pages;
+        $config['num_links'] = 10; //Número de links mostrados en la paginación
+        /*$config['first_link'] = '<<';
+        $config['last_link'] = '>>';
+        $config['next_link'] = '>';
+        $config['prev_link'] = '<';*/
+
+        $config['full_tag_open'] = '<ul class="pagination pagination-sm">';
+        $config['full_tag_close'] = '</ul>';
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li class="active"><span>';
+        $config['cur_tag_close'] = '</span></li>';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';
+        $config['first_link'] = '«';
+        $config['prev_link'] = '‹';
+        $config['last_link'] = '»';
+        $config['next_link'] = '›';
+        $config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';
+
+        $this->pagination->initialize($config);
+
+        $this->data['listaInterpretesPorLetra'] = $this->mod_int->lista_interpretes_letra_paginado($desde, $config['per_page'], $letra);
         $this->data['letra'] = $letra;
+
+        $this->data['paginacion'] = $this->pagination->create_links();
 		
 		$this->load->view('vistaInterpretesPorIndiceLetra',$this->data);
 	}
@@ -410,10 +498,6 @@ class Controlador_principal extends CI_Controller {
         $this->data['usuarioInterprete'] = $this->mod_usu->obtener_nombre_usuario($this->data['infoInterpretes']->usuario_interprete);
 		
 		//$camposInt = $this->mod_int->obtener_campos_interprete();
-		
-		/*$data['title'] = "Información de ".$data['infoInterpretes'][0]->nombre_interprete;
-		$data['main_content'] = 'vistaInformacionInterprete';
-		$this->load->view('plantillas/template', $data);*/
 
         $title =  "Información de ".$this->data['infoInterpretes']->nombre_interprete;
 
@@ -422,75 +506,132 @@ class Controlador_principal extends CI_Controller {
 	
 	public function vista_anyadir_letra()
 	{
-		/*$data['title'] = "Añadir una nueva letra";
-		$data['main_content'] = 'vistaAnyadirLetra';
-		$this->load->view('plantillas/template', $data);*/
-
         $this->establecerContenidoPrincipal('Añadir una nueva letra', 'vistaAnyadirLetra');
 	}
+
+    /**
+     * Función que elimina de una cadena las etiquetas de HTML o PHP que contenga
+     *
+     * @param $string  La cadena de la que queremos remover los tags de HTML o PHP
+     * @return mixed|string  La cadena sin las etiquetas HTML/PHP
+     *
+     * @obtenida_de http://php.net/manual/en/function.strip-tags.php
+     */
+    function rip_tags($string) {
+
+        // ----- remove HTML TAGs -----
+        $string = preg_replace ('/<[^>]*>/', ' ', $string);
+
+        // ----- remove control characters -----
+        $string = str_replace("\r", '', $string);    // --- replace with empty space
+        $string = str_replace("\n", ' ', $string);   // --- replace with space
+        $string = str_replace("\t", ' ', $string);   // --- replace with space
+
+        // ----- remove multiple spaces -----
+        $string = trim(preg_replace('/ {2,}/', ' ', $string));
+
+        return $string;
+
+    }
 	
 	public function guardar_datos_letra()
 	{
-		$nombreInterpreteCancion = $this->input->post('intCan'); //Nombre del intérprete
-		$albumCancion = $this->input->post('albCan');
-		$tituloCancion = $this->input->post('titCan');
-		$letraCancion = $this->input->post('letraCancion');
-		
-		$nombreUsuario = $this->session->userdata['nombreregistro'];
-		$codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
-		
-		$idInt = "";
-		$idAlb = "";
-		
-		if($this->mod_int->comprobar_existencia_interprete($nombreInterpreteCancion))
-		{
-			$idInt = $this->mod_int->obtener_id_interprete($nombreInterpreteCancion);
-		}
-		
-		else
-		{
-			$this->mod_int->insertar_solo_nombre_interprete($nombreInterpreteCancion, $codigoUsuario);
-			$idInt = $this->mod_int->obtener_id_interprete_ultimo_insert();
-		}
-		
-		if($this->mod_alb->comprobar_existencia_album($idInt, $albumCancion))
-		{
-			$idAlb = $this->mod_alb->obtener_id_album($idInt, $albumCancion);
-		}
-		
-		else
-		{
-			$this->mod_alb->insertar_solo_nombre_album($albumCancion, $idInt, $codigoUsuario);
-			$idAlb = $this->mod_alb->obtener_id_album_ultimo_insert();
-		}
-		
-		if(!$this->mod_can->comprobar_existencia_cancion($tituloCancion, $idAlb, $idInt))
-		{
-			$this->mod_can->insertar_solo_nombre_cancion($tituloCancion, $idAlb, $codigoUsuario);
-			$idCan = $this->mod_can->obtener_id_cancion_ultimo_insert();
-			
-			$this->mod_let->insertar_letra($idCan, $letraCancion);
-			
-			$this->index();
-		}
-		
-		else
-		{
-			/*$data['title'] = "Cancion existente";
-			$data['main_content'] = 'vistaAnyadirLetra';
-			$this->load->view('plantillas/template', $data);*/
+        $interpreteCancion = $this->input->post('intCan'); //Nombre del intérprete
+        $albumCancion = $this->input->post('albCan');
 
-            $this->establecerContenidoPrincipal('Cancion existente', 'vistaAnyadirLetra');
-		}
+        $parametrosComprobarCancion = $interpreteCancion.','.$albumCancion;
+
+        $this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
+
+        $this->form_validation->set_rules('intCan', 'intérprete de la canción', 'trim|required|max_length[50]');
+        $this->form_validation->set_rules('albCan', 'álbum de la canción', 'trim|required|max_length[30]');
+        $this->form_validation->set_rules('titCan', 'título de la canción', 'trim|required|max_length[30]|callback_comprobarExistenciaCancion['.$parametrosComprobarCancion.']');
+        $this->form_validation->set_rules('wysihtml5-textarea', 'letra de la canción', 'required');
+
+        $this->form_validation->set_message('comprobarExistenciaCancion','Esta canción ya existe');
+
+        if(!$this->form_validation->run())
+        {
+            $this->vista_anyadir_letra();
+        }
+
+        else
+        {
+            $tituloCancion = $this->input->post('titCan');
+            $letraCancion = $this->input->post('wysihtml5-textarea');
+            $letraCancionSinHtml = $this->rip_tags($this->input->post('wysihtml5-textarea'));
+
+
+            $nombreUsuario = $this->session->userdata['nombreregistro'];
+            $codigoUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
+
+            $idInt = "";
+            $idAlb = "";
+
+            if($this->mod_int->comprobar_existencia_interprete($interpreteCancion))
+            {
+                $idInt = $this->mod_int->obtener_id_interprete($interpreteCancion);
+            }
+
+            else
+            {
+                $this->mod_int->insertar_solo_nombre_interprete($interpreteCancion, $codigoUsuario);
+                $idInt = $this->mod_int->obtener_id_interprete_ultimo_insert();
+            }
+
+            if($this->mod_alb->comprobar_existencia_album($albumCancion, $idInt))
+            {
+                $idAlb = $this->mod_alb->obtener_id_album($idInt, $albumCancion);
+            }
+
+            else
+            {
+                $this->mod_alb->insertar_solo_nombre_album($albumCancion, $idInt, $codigoUsuario);
+                $idAlb = $this->mod_alb->obtener_id_album_ultimo_insert();
+            }
+
+            if(!$this->mod_can->comprobar_existencia_cancion($tituloCancion, $idAlb, $idInt))
+            {
+                $this->mod_can->insertar_solo_nombre_cancion($tituloCancion, $idAlb, $codigoUsuario);
+                $idCan = $this->mod_can->obtener_id_cancion_ultimo_insert();
+
+                $this->mod_let->insertar_letra($idCan, $letraCancion, $letraCancionSinHtml);
+
+                $this->index();
+            }
+
+        }
 	}
+
+    public function comprobarExistenciaCancion($nCan, $paraComprobacion)
+    {
+        //$parametros[0] = intérprete de la canción
+        //$parametros[1] = álbum de la canción
+        $parametros = explode(",", $paraComprobacion);
+
+        $comprobacion = true;
+
+        if ($this->mod_int->comprobar_existencia_interprete($parametros[0]))
+        {
+            $idInterpreteCan = $this->mod_int->obtener_id_interprete($parametros[0]);
+
+            if($this->mod_alb->comprobar_existencia_album($parametros[1], $idInterpreteCan))
+            {
+                $idAlbumCan = $this->mod_alb->obtener_id_album($idInterpreteCan, $parametros[1]);
+
+                if($this->mod_can->comprobar_existencia_cancion($nCan, $idAlbumCan, $idInterpreteCan))
+                {
+                    $comprobacion =  false;
+                }
+            }
+        }
+
+        return $comprobacion;
+    }
 	
 	public function indice_letras()
 	{
 		$this->data['listaCanciones'] = $this->mod_can->lista_canciones();
-
-        /*$this->data['title'] = "Índice de letras";
-        $this->data['main_content'] = 'indiceLetras';
-		$this->load->view('plantillas/template', $this->data);*/
 
         $this->establecerContenidoPrincipal('Índice de letras', 'indiceLetras');
 	}
@@ -501,10 +642,16 @@ class Controlador_principal extends CI_Controller {
         $this->data['albumLetra'] = $this->mod_can->obtener_album_cancion($idCancion);
         $this->data['cancionObtenida'] = $this->mod_can->obtenerCancion($idCancion);
         $this->data['letraObtenida'] = $this->mod_let->obtenerLetra($idCancion);
-		
-		/*$data['title'] = $data['cancionObtenida']->nombre_cancion;
-		$data['main_content'] = 'mostrarLetra';
-		$this->load->view('plantillas/template', $data);*/
+
+        $visitas = $this->data['letraObtenida']->visitas_letra;
+        $visitas++;
+
+        $idLet = $this->data['letraObtenida']->id_letra_cancion;
+        $datos['visitas_letra'] = $visitas;
+
+        $this->mod_let->actualizar_visitas($idLet, $datos);
+
+        $this->data['visitasLetra'] = $visitas;
 
         $title = $this->data['cancionObtenida']->nombre_cancion;
 
@@ -518,32 +665,23 @@ class Controlador_principal extends CI_Controller {
 	public function gestion_tipos_interprete()
 	{
         $this->data['listaTiposInterprete'] = $this->mod_tipo_int->lista_tipos_interprete_odenada("nombre_tipo_interprete");
-		
-		/*$data['title'] = "Gestión de tipos de intérprete";
-		$data['main_content'] = 'gestionTiposInterprete';
-		$this->load->view('plantillas/template', $data);*/
 
         $this->establecerContenidoPrincipal('Gestión de tipos de intérprete', 'gestionTiposInterprete');
 	}
 	
 	public function formularioNuevoTipoInterprete()
 	{
-		/*$data['title'] = "Nuevo Tipo de Intérprete";
-		$data['main_content'] = 'formNuevoTipoInterprete';
-		$this->load->view('plantillas/template', $data);*/
-
         $this->establecerContenidoPrincipal('Nuevo Tipo de Intérprete', 'formNuevoTipoInterprete');
 	}
 
 	public function guardar_datos_tipo_interprete()
 	{
-		$this->form_validation->set_rules('nomTipoInt', 'nombre del tipo de intérprete', 'required|alpha|min_length[3]|max_length[50]|trim|is_unique[tipo_interprete.nombre_tipo_interprete]');
-		
-        $this->form_validation->set_message('required', 'Debe introducir el %s');
-        $this->form_validation->set_message('alpha','El %s debe estar compuesto sólo por letras');
-        $this->form_validation->set_message('min_length','El %s debe tener al menos %s carácteres');
-        $this->form_validation->set_message('max_length','El %s debe tener como máximo %s carácteres');
-        $this->form_validation->set_message('is_unique','Este %s ya está registrado');
+        $this->form_validation->set_error_delimiters('<div class="text-danger">', '</div>');
+
+		$this->form_validation->set_rules('nomTipoInt', 'nombre del tipo de intérprete', 'required|min_length[3]|max_length[50]|trim|is_unique[tipo_interprete.nombre_tipo_interprete]|callback_alpha_space');
+
+        $this->form_validation->set_message('alpha_space','El campo %s debe estar compuesto sólo por letras');
+        $this->form_validation->set_message('is_unique','Este %s ya existe');
 		
 		if($this->form_validation->run() == false)
 		{
@@ -563,10 +701,6 @@ class Controlador_principal extends CI_Controller {
 	public function formularioModificarTipoInterprete($idTipoInt)
 	{
 		$this->data['tipoIntObtenido'] = $this->mod_tipo_int->obtener_tipo_interprete($idTipoInt);
-		
-		/*$data['title'] = "Modificar Tipo de Intérprete";
-		$data['main_content'] = 'formModificarTipoInterprete';
-		$this->load->view('plantillas/template', $data);*/
 
         $this->establecerContenidoPrincipal('Modificar Tipo de Intérprete', 'formModificarTipoInterprete');
 	}
@@ -612,10 +746,6 @@ class Controlador_principal extends CI_Controller {
 	public function gestion_usuarios()
 	{
 		$this->data['listaUsuarios'] = $this->mod_usu->lista_usuarios_odenada("nombre_registro_usuario");
-		
-		/*$data['title'] = "Gestión de Usuarios";
-		$data['main_content'] = 'gestionUsuarios';
-		$this->load->view('plantillas/template', $data);*/
 
         $this->establecerContenidoPrincipal('Gestión de Usuarios', 'gestionUsuarios');
 	}
@@ -636,10 +766,6 @@ class Controlador_principal extends CI_Controller {
 		}
 		
 		$this->data['listaPaisesContinente'] = $listaPaisesContinente;
-		
-		/*$data['title'] = "Modificar Usuario";
-		$data['main_content'] = 'formModificarUsuario';
-		$this->load->view('plantillas/template', $data);*/
 
         $this->establecerContenidoPrincipal('Modificar Usuario', 'formModificarUsuario');
 	}
@@ -679,6 +805,62 @@ class Controlador_principal extends CI_Controller {
 		
 		$this->gestion_usuarios();
 	}
+
+    public function datos_usuario()
+    {
+        $nombreUsuario = $this->session->userdata['nombreregistro'];
+        $this->data['usuarioConectado'] = $this->mod_usu->obtener_usuario_por_registro($nombreUsuario);
+
+        $this->data['paisUsuario'] = $this->mod_pais->obtener_nombre_pais($this->data['usuarioConectado']->pais_usuario);
+
+        $this->load->view('datosUsuario',$this->data);
+    }
+
+    public function vista_anyadir_publicaciones_Usuario()
+    {
+        $this->load->view('anyadirPublicacionUsuario');
+    }
+
+    public function vista_publicaciones_Usuario()
+    {
+        $this->load->view('publicacionesUsuario');
+    }
+
+    public function interpretes_Usuario()
+    {
+        $nombreUsuario = $this->session->userdata['nombreregistro'];
+        $idUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
+
+        $this->data['interpretesUsuario'] = $this->mod_int->lista_interpretes_usuario($idUsuario);
+
+        $this->load->view('interpretesUsuario',$this->data);
+    }
+
+    public function albumes_Usuario()
+    {
+        $nombreUsuario = $this->session->userdata['nombreregistro'];
+        $idUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
+
+        $this->data['albumesUsuario'] = $this->mod_alb->lista_albumes_usuario($idUsuario);
+
+        $this->load->view('albumesUsuario',$this->data);
+    }
+
+    public function canciones_Usuario()
+    {
+        $nombreUsuario = $this->session->userdata['nombreregistro'];
+        $idUsuario = $this->mod_usu->obtener_id_usuario($nombreUsuario);
+
+        $this->data['cancionesUsuario'] = $this->mod_can->lista_canciones_usuario($idUsuario);
+
+        $this->load->view('cancionesUsuario',$this->data);
+    }
+
+    public function cargarFormularioNuevoInterprete()
+    {
+        $this->load->view('formularioNuevoInterprete', $this->data);
+    }
+
 	
 	//FIN Usuario
 	
@@ -687,20 +869,12 @@ class Controlador_principal extends CI_Controller {
 	public function gestion_generos()
 	{
 		$this->data['listaGeneros'] = $this->mod_gen->lista_generos_odenada("id_genero");
-		
-		/*$data['title'] = "Gestión de géneros";
-		$data['main_content'] = 'gestionGeneros';
-		$this->load->view('plantillas/template', $data);*/
 
         $this->establecerContenidoPrincipal('Gestión de géneros', 'gestionGeneros');
 	}
 	
 	public function formularioNuevoGenero()
 	{
-		/*$data['title'] = "Nuevo Género";
-		$data['main_content'] = 'formNuevoGenero';
-		$this->load->view('plantillas/template', $data);*/
-
         $this->establecerContenidoPrincipal('Nuevo Género', 'formNuevoGenero');
 	}
 	
@@ -732,10 +906,6 @@ class Controlador_principal extends CI_Controller {
 	public function formularioModificarGenero($idGenero)
 	{
 		$this->data['generoObtenido'] = $this->mod_gen->obtener_genero($idGenero);
-		
-		/*$data['title'] = "Modificar Género";
-		$data['main_content'] = 'formModificarGenero';
-		$this->load->view('plantillas/template', $data);*/
 
         $this->establecerContenidoPrincipal('Modificar Género', 'formModificarGenero');
 	}
@@ -745,11 +915,7 @@ class Controlador_principal extends CI_Controller {
 		$idGenero = $this->input->post('idGen');
 		
 		$this->form_validation->set_rules('nomGen', 'nombre del género', 'required|alpha|min_length[3]|max_length[100]|trim|is_unique[genero.nombre_genero]');
-		
-        $this->form_validation->set_message('required', 'Debe introducir el %s');
-        $this->form_validation->set_message('alpha','El %s debe estar compuesto sólo por letras');
-        $this->form_validation->set_message('min_length','El %s debe tener al menos %s carácteres');
-        $this->form_validation->set_message('max_length','El %s debe tener como máximo %s carácteres');
+
         $this->form_validation->set_message('is_unique','Este %s ya está registrado');
 		
 		if($this->form_validation->run() == false)
@@ -781,13 +947,53 @@ class Controlador_principal extends CI_Controller {
 	public function gestion_interpretes()
 	{
 		$this->data['listaInterpretes'] = $this->mod_int->lista_interpretes_odenada("nombre_interprete");
-		
-		/*$data['title'] = "Gestión de Intérpretes";
-		$data['main_content'] = 'gestionInterpretes';
-		$this->load->view('plantillas/template', $data);*/
 
         $this->establecerContenidoPrincipal('Gestión de Intérpretes', 'gestionInterpretes');
 	}
 	
 	//FIN Intérpretes
+
+    public function busqueda()
+    {
+        $cadenaBusqueda = $this->input->post('inputBusqueda');
+        $criterioBusqueda = $this->input->post('selectBusqueda');
+
+        $this->form_validation->set_rules('inputBusqueda', 'búsqueda', 'required|trim');
+
+        if($this->form_validation->run() == false)
+        {
+            $this->index();
+        }
+
+        else
+        {
+            switch ($criterioBusqueda) {
+                case "busletra":
+
+                    $this->data['resultadoObtenido'] = $this->mod_let->busqueda_existencia_en_cancion($cadenaBusqueda);
+
+                    break;
+                case "bustitulo":
+
+                    $this->data['resultadoObtenido'] = $this->mod_let->busqueda_cancion_por_titulo($cadenaBusqueda);
+
+                    break;
+                case "busalbum":
+
+                    $this->data['resultadoObtenido'] = $this->mod_let->busqueda_cancion_por_album($cadenaBusqueda);
+
+                    break;
+                case "businterprete":
+
+                    $this->data['resultadoObtenido'] = $this->mod_let->busqueda_cancion_por_interprete($cadenaBusqueda);
+
+                    break;
+            }
+
+            $this->data['numResultados'] = count($this->data['resultadoObtenido']);
+
+            $this->establecerContenidoPrincipal('Resultados de la búsqueda', 'resultadosBusqueda');
+        }
+
+    }
 }	

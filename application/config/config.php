@@ -17,7 +17,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | environments.
 |
 */
-$config['base_url'] = 'http://localhost/Proyecto/';
+//$config['base_url'] = 'http://localhost/Proyecto/';
+$config['base_url'] = 'http://iessansebastian.com/alumnos/2daw151ev/mariar/Proyecto/';
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -70,7 +73,7 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language']	= 'english';
+$config['language']	= 'spanish';
 
 /*
 |--------------------------------------------------------------------------

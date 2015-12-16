@@ -68,8 +68,6 @@
                 ?>
                 </div>-->
 
-                <input type="hidden" name="generosRecogidos" id="generosRecogidos" value="">
-
                 <br><br>
 
                 <div class="form-group">
@@ -79,21 +77,24 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label" for='bioInt' >Biografía del interprete: </label><br>
+                    <label class="control-label" for='bioInt' >Biografía del interprete: </label>
                     <textarea class="form-control" rows="6" name="bioInt" id="bioInt" value='<?= set_value('bioInt');?>' ></textarea>
                     <?=form_error('bioInt'); ?>
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label" for='imgInt' >Imagen del intérprete: </label>
-                    <input type='file' name='imgInt' id='imgInt' />
+                    <label class="control-label" for='imgSubida' >Imagen del intérprete: </label>
+                    <input type='file' name='imgSubida' id='imgSubida' /><br>
+                    <?=form_error('imgSubida'); ?>
                 </div>
 
                 <br>
 
-                <input class="btn btn-rosado btn-block" type='submit' value='Enviar Datos' onClick="recogerGenerosInterprete();" ><br><br>
+                <input class="btn btn-rosado btn-block" type='submit' value='Enviar Datos' >
 
             </form>
         </div>
     </div>
 </div>
+
+<br><br>

@@ -14,7 +14,14 @@ class Modelo_album extends CI_Model
     	$qSqlA = 'SELECT * from album';
     	$eSqlA = $this->db->query($qSqlA);
     	return $eSqlA->result();
-    }/**/
+    }
+
+    public function lista_albumes_usuario($idUsuario)
+    {
+        $qSqlA = "SELECT * FROM album WHERE usuario_album = ".$idUsuario;
+        $eSqlA = $this->db->query($qSqlA);
+        return $eSqlA->result();
+    }
 
 	public function insertar_album($nombreAlb, $interpreteAlb, $numPistas, $anyoAlb, $informacionAlb, $imagenAlb, $usuarioAlb)
 	{
@@ -44,7 +51,7 @@ class Modelo_album extends CI_Model
 		$this->db->insert('album',$campos);
 	}
 	
-	public function comprobar_existencia_album($interpreteAlbum, $nombreAlbum)
+	public function comprobar_existencia_album($nombreAlbum, $interpreteAlbum)
 	{
 		$existe = false;
 		
