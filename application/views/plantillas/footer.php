@@ -5,6 +5,14 @@
 
 <script>
 
+function recogerLetra()
+{	//alert();
+	var contenidoLetra = document.getElementById("wysihtml5-textarea");
+	alert(contenidoLetra.value);
+	letraCancion.value = contenidoLetra.value;
+	alert(letraCancion.value);
+}
+
 var editor = new wysihtml5.Editor("wysihtml5-textarea", { // id of textarea element
 	toolbar:      "wysihtml5-toolbar", // id of toolbar element
 	stylesheets:  "<?= base_url(); ?>assets/css/style.css",

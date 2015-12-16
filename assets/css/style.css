@@ -28,13 +28,13 @@ footer{
 	text-align: center;
 }
 
-#toolbar [data-wysihtml5-action] {
-    float: right;
+#wysihtml5-toolbar [data-wysihtml5-action] {
+    /*float: right;*/
   }
   
-  #toolbar,
+  #wysihtml5-toolbar,
   textarea {
-    width: 850px;
+    /*width: 600px;*/
     padding: 5px;
     -webkit-box-sizing: border-box;
     -ms-box-sizing: border-box;
@@ -43,7 +43,8 @@ footer{
   }
   
   textarea {
-    height: 280px;
+	width: 600px;
+    height: 500px;
     border: 2px solid green;
     font-family: Verdana;
     font-size: 11px;
