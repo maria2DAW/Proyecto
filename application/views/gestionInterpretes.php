@@ -22,8 +22,8 @@ foreach($listaInterpretes as $interprete)
 	<?=$interprete->publicacion_interprete;  ?>
 	<?=$interprete->usuario_modificacion_interprete;  ?>
 	<?=$interprete->modificacion_interprete;  ?><br>
-	<a href='<?=base_url(); ?>index.php/Controlador_principal/formularioModificarInterprete/<?=$interprete->id_interprete;?>'>Modificar</a>
-	<a href='<?=base_url(); ?>index.php/Controlador_principal/eliminarInterprete/<?=$interprete->id_interprete;?>'>Eliminar</a>	
+	<a href='#'>Modificar</a>
+	<a href='#'>Eliminar</a>
 	<br><br>
 <?php
 }

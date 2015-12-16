@@ -140,7 +140,8 @@ class Controlador_principal extends CI_Controller {
         $this->establecerContenidoPrincipal("Nuevo Álbum", "formularioNuevoAlbum");
 	}
 	
-	public function guardar_datos_album()
+	//Arreglar función
+    public function guardar_datos_album()
 	{		
 		$nombreAlb = $this->input->post('nomAlb');
 		$InterpreteAlb = $this->input->post('intAlb');
@@ -365,8 +366,8 @@ class Controlador_principal extends CI_Controller {
 	public function vista_info_interpretes($idInterprete)
 	{
         $this->data['infoInterpretes'] = $this->mod_int->obtener_interprete_por_id($idInterprete);
-        $this->data['tipoInterprete'] = $this->mod_tipo_int->obtener_nombre_tipo_interprete($this->data['infoInterpretes'][0]->tipo_interprete);
-        $this->data['usuarioInterprete'] = $this->mod_usu->obtener_nombre_usuario($this->data['infoInterpretes'][0]->usuario_interprete);
+        $this->data['tipoInterprete'] = $this->mod_tipo_int->obtener_nombre_tipo_interprete($this->data['infoInterpretes']->tipo_interprete);
+        $this->data['usuarioInterprete'] = $this->mod_usu->obtener_nombre_usuario($this->data['infoInterpretes']->usuario_interprete);
 		
 		//$camposInt = $this->mod_int->obtener_campos_interprete();
 		
@@ -374,7 +375,7 @@ class Controlador_principal extends CI_Controller {
 		$data['main_content'] = 'vistaInformacionInterprete';
 		$this->load->view('plantillas/template', $data);*/
 
-        $title =  "Información de ".$this->data['infoInterpretes'][0]->nombre_interprete;
+        $title =  "Información de ".$this->data['infoInterpretes']->nombre_interprete;
 
         $this->establecerContenidoPrincipal($title, 'vistaInformacionInterprete');
 	}
