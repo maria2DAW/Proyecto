@@ -9,20 +9,6 @@ class Modelo_usuario extends CI_Model
 		//$this->load->database();
 	}
 	
-	public function lista_usuarios()
-	{
-		$qSqlA = 'SELECT * from usuario';
-    	$eSqlA = $this->db->query($qSqlA);
-    	return $eSqlA->result();
-	}
-	
-	public function lista_usuarios_odenada($ordenacion)
-    {
-    	$qSqlA = 'SELECT * from usuario ORDER BY "'.$ordenacion.'";';
-    	$eSqlA = $this->db->query($qSqlA);
-    	return $eSqlA->result();
-    }
-	
 	public function insertar_usuario($nombreUsu, $email, $pass, $nombre, $apellidos, $pais)
 	{
 		$campos = array(
@@ -36,25 +22,6 @@ class Modelo_usuario extends CI_Model
 		);
 		
 		$this->db->insert('usuario',$campos);
-	}	
-	
-	public function modificar_usuario($idUsuario, $nombre, $apellidos, $pais)
-	{
-		$campos = array(
-		'nombre_usuario' => $nombre,
-		'apellidos_usuario' => $apellidos,
-		'pais_usuario' => $pais		
-        );
-		
-        $this->db->where('id_usuario', $idUsuario);
-        return $this->db->update('usuario', $campos);
-	}
-	
-	public function cambiar_contrasenya($idUsuario, $nuevaPass)
-	{
-		$campos = array('password_usuario' => $nuevaPass );
-		$this->db->where('id_usuario', $idUsuario);
-		return $this->db->update('usuario', $campos);
 	}
 	
 	public function comprobarUsuarioYPassword($usuarioIntroducido, $password)
@@ -86,16 +53,6 @@ class Modelo_usuario extends CI_Model
 		$qSqlA = $this->db->query('SELECT nombre_registro_usuario from usuario where id_usuario = '.$idUsuario.';');
 		$row = $qSqlA->row();
 		return $row->nombre_registro_usuario;
-	}
-	
-	public function baja_usuario($idUsuario)
-	{
-		$campos = array(
-		'baja' => 1
-		);
-		
-		$this->db->where('id_usuario', $idUsuario);
-		return $this->db->update('usuario', $campos);
 	}
 	
 }

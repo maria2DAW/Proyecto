@@ -22,10 +22,4 @@ class Modelo_pais extends CI_Model
     	return $eSqlA->result_array();
     }
 	
-	public function lista_paises_odenada($ordenacion)
-    {
-    	$qSqlA = 'SELECT * from pais ORDER BY '.$ordenacion;
-    	$eSqlA = $this->db->query($qSqlA);
-    	return $eSqlA->result();
-    }	
 }

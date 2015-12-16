@@ -112,7 +112,7 @@ class Modelo_interprete extends CI_Model
     {
     	$qSqlA = 'SELECT * from interprete WHERE id_interprete = '.$idInterprete;
     	$eSqlA = $this->db->query($qSqlA);
-    	return $eSqlA->row();
+    	return $eSqlA->result();
     }
 	
 	public function obtener_campos_interprete()
